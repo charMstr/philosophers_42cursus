@@ -24,7 +24,7 @@ CFLAGS = -Wall -Wextra -Werror
 CC = gcc
 NAME = philo_one
 IFLAGS = -I $(INCLUDE_PATH_PROJECT)
-LDFLAGS =
+LDFLAGS = -lpthread
 
 DEPS = $(INCLUDES)
 #DEPS_BONUS = $(INCLUDES_BONUS)
@@ -59,7 +59,7 @@ INCLUDE_PATH_PROJECT = ./includes/
 
 ########################### HEADER FILES ######################################
 ###############################################################################
-H_FILES =
+H_FILES =	philo_one
 
 #H_FILES_BONUS =
 
@@ -75,7 +75,9 @@ INCLUDES := $(patsubst %, $(INCLUDE_PATH_PROJECT)%.h, $(H_FILES))
 
 ########################### SRC/OBJ & BONUS FILES #############################
 ###############################################################################
-SRC_FILES =	main
+SRC_FILES =	main\
+			libft_funcs1
+	
 
 #BONUS_FILES =
 

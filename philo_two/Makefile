@@ -24,7 +24,7 @@ CFLAGS = -Wall -Wextra -Werror
 CC = gcc
 NAME = philo_two
 IFLAGS = -I $(INCLUDE_PATH_PROJECT)
-LDFLAGS =
+LDFLAGS = -lpthrea
 
 DEPS = $(INCLUDES)
 #DEPS_BONUS = $(INCLUDES_BONUS)
