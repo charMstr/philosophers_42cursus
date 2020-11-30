@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   libft_funcs1.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/11/30 21:39:33 by charmstr          #+#    #+#             */
+/*   Updated: 2020/11/30 21:39:58 by charmstr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <unistd.h>
 
 /*
@@ -29,25 +41,6 @@ int		ft_atoi(const char *str)
 		i++;
 	}
 	return (int)(nb * sign);
-}
-
-void	ft_putchar(char c)
-{
-	write(1, &c, 1);
-}
-
-void	ft_putnbr(int n)
-{
-	if (n < 0)
-	{
-		ft_putchar('-');
-		if (n < -9)
-			ft_putnbr(-(n / 10));
-	}
-	else if (n > 9)
-		ft_putnbr(n / 10);
-	(n > 0) ? ft_putchar(n % 10 + '0') \
-		: ft_putchar(-(n % 10) + '0');
 }
 
 size_t	ft_strlen(char *str)
