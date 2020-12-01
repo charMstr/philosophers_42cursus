@@ -93,5 +93,5 @@ int				first_fork_index(t_philo *philo);
 int				second_fork_index(t_philo *philo);
 
 void			describe_state(t_philo *philo, t_state state, int time);
-int				philo_strcpy_in_buffer(char *dst, const char *src);
+int				philo_strcpy_in_buffer(char *dst, int start, const char *src);
 #endif
