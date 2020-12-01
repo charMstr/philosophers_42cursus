@@ -9,6 +9,7 @@
 # define DEL_MUTEXES 1
 # define NODEL_MUTEXES 0
 
+
 typedef struct		s_parser_input
 {
 	int	number_philo;
@@ -20,8 +21,31 @@ typedef struct		s_parser_input
 
 typedef enum		e_state
 {
-	FORK, EAT, SLEEP, THINK, DEAD
+	FORK1, FORK2, EAT, SLEEP, THINK, DEAD
 }					t_state;
+
+/*
+** note:	This structure will be used when threading for our writes.
+**			Each time we want to write and lock mutexes for it (both very
+**			costly operations), we will start a new thread and detach it so
+**			that we can keep doing our businesses.
+**			The problem is that we cannot use a single buffer, the folowing
+**			writes will update it while we are writing, or we wait for the end
+**			of the write (we do not detach the process) but there is no point.
+**			The solution is to have one buffer per sentence we will write.
+**			6 in total (2 for the forks).
+**
+** note:	This structure will be in an array containing six of them.
+*/
+
+typedef struct	s_writer
+{
+	unsigned int	time;
+	t_state			state;
+	unsigned int	id;
+	pthread_mutex_t *mutex_on_mic;
+	char			buffer[32];
+}				t_writer;
 
 /*
 **	total_number: the total number of philosophers.
@@ -79,8 +103,6 @@ t_philo			**philo_array_init_root(t_parser_input *parser, \
 		int philo_number, unsigned int *stop, pthread_mutex_t *mutex_on_mic);
 t_philo			*philo_struct_init(t_parser_input *parser, int id, \
 		unsigned int *stop);
-unsigned int	philo_itoa_set_buff(unsigned int num, char buff[], \
-		unsigned int i, unsigned int j);
 int				set_fork_index(int id, int total_number, int which);
 int				philo_array_set_time(t_philo **philo_array, int total_philo);
 void			*philo_array_destroy(t_philo **array, int size, \
@@ -95,13 +117,19 @@ void			destroy_and_free_mutexes_on_forks(pthread_mutex_t \
 void			start_and_join_threads(unsigned int number_philo, \
 		pthread_t *pthreads_array, t_philo **philo_array);
 void			*start_philo(void *philo_void);
+void			init_array_writers(t_writer (*array_writers)[], \
+		t_philo *philo);
 
 unsigned int	get_elapsed_time(t_philo *philo);
-void			philo_try_to_eat2(t_philo *philo, unsigned int time);
-void			philo_try_to_eat1(t_philo *philo);
+void			philo_starts_to_eat(t_philo *philo, unsigned int time, \
+		t_writer (*array_writers)[]);
+void			philo_try_to_grab_forks(t_philo *philo, t_writer (*array_writers)[]);
 
-void			describe_state(t_philo *philo, t_state state, \
-		unsigned int time);
+void			describe_state(t_state state, unsigned int time, \
+		t_writer *writer);
 unsigned int	philo_strcpy_in_buffer(char *dst, unsigned int start, \
 		const char *src);
+void			*philo_write(void *writer_void);
+void			philo_strrev(int len, char *buff);
+int				philo_num_to_buff(int num, char buff[], int start);
 #endif

@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:35:52 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 20:32:04 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 23:14:26 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ t_philo *philo_struct_init(t_parser_input *parser, int id, unsigned int *stop)
 	philo->mutexes_on_forks = NULL;
 	philo->total_number = (unsigned int)parser->number_philo;
 	philo->id = (unsigned int)id;
-	philo_itoa_set_buff(id, philo->itoa_id, 1, 0);
 	philo->fork1 = (unsigned int)set_fork_index(id, parser->number_philo, 1);
 	philo->fork2 = (unsigned int)set_fork_index(id, parser->number_philo, 2);
 	philo->stop = stop;
@@ -129,42 +128,6 @@ int	set_fork_index(int id, int total_number, int which)
 		else
 			return (id - 1);
 	}
-}
-
-/*
-** note:	this function will fill the buff string.
-**
-**			It pre-adds a space at the end for us for the future concatenation
-**			of strings.
-**
-** RETURN:	the length of the itoa we just wrote.
-*/
-
-unsigned int philo_itoa_set_buff(unsigned int num, char buff[], unsigned int i, unsigned int j)
-{
-	unsigned int len;
-
-	buff[0] = ' ';
-	if (num == 0)
-	{
-		buff[i] = 48;
-		i++;
-	}
-	while (num > 0)
-	{
-		buff[i] = 48 + num % 10;
-		num = num / 10;
-		i++;
-	}
-	len = i;
-	while (--i > j)
-	{
-		buff[i] ^= buff[j];
-		buff[j] ^= buff[i];
-		buff[i] ^= buff[j];
-		j++;
-	}
-	return (len);
 }
 
 /*
