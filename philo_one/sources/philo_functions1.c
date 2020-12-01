@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 15:16:04 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 01:44:41 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 15:25:04 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 ** note:	This function returns the time elapsed since the last meal.
 **			It takes care of the case when we go from one second to another.
 **
-** RETURN:	time elapsed
+** RETURN:	0
 **			-1 failure with gettimeofday func.
 */
 

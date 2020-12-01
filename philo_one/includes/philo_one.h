@@ -45,9 +45,17 @@ typedef enum e_state
 **	timeval_tmp: the gettimeofday struct. always access timeval_tmp.tv_usec
 */
 
+typedef struct s_writer
+{
+	t_state			state;
+	int				time;
+	int				id;
+	pthread_mutex_t *mutex_on_mic;
+}				t_writer;
+
 typedef struct	s_philo
 {
-	char	itoa_id[32];
+	char	itoa_id[8];
 	int		total_number;
 	int		id;
 	int		time_to_eat;
@@ -61,6 +69,8 @@ typedef struct	s_philo
 	pthread_mutex_t *mutex_on_mic;
 	struct timeval	timeval_last_meal;
 	struct timeval	timeval_tmp;
+	int		time;
+	t_state state;
 }				t_philo;
 
 int		ft_atoi(const char *str);
