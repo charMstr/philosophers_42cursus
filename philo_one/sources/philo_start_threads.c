@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 14:28:44 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 17:22:11 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 20:59:23 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@
 **			gotta die.
 */
 
-void start_and_join_threads(int number_philo, pthread_t *pthreads_array, t_philo **philo_array)
+void start_and_join_threads(unsigned int number_philo, pthread_t *pthreads_array, t_philo **philo_array)
 {
-	int		i;
+	unsigned int		i;
 
 	i = 0;
 	while (i < number_philo)
@@ -52,26 +52,23 @@ void start_and_join_threads(int number_philo, pthread_t *pthreads_array, t_philo
 void	*start_philo(void *philo_void)
 {
 	t_philo *philo;
-	int time;
+	unsigned int time;
 
 	philo = (t_philo *)philo_void;
 	while (*(philo->stop) == 0)
 	{
-		if (philo->meals_limit && (philo->meals_count >= philo->meals_target))
+		if (!philo->meals_count)
 			break;
-		if (((time = get_elapsed_time(philo)) == -1) \
-				|| time > philo->time_to_die)
+		philo_try_to_eat1(philo);
+		if ((time = get_elapsed_time(philo)) > philo->time_to_die)
 		{
+			pthread_mutex_unlock(&((philo->mutexes_on_forks)[philo->fork1]));
+			pthread_mutex_unlock(&((philo->mutexes_on_forks)[philo->fork2]));
 			describe_state(philo, DEAD, time);
 			*(philo->stop) = 1;
 			return (NULL);
 		}
-		if ((time = philo_try_to_eat(philo, time)))
-		{
-			describe_state(philo, DEAD, time);
-			*(philo->stop) = 1;
-			return (NULL);
-		}
+		philo_try_to_eat2(philo, time);
 	}
 	return (NULL);
 }

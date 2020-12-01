@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:01:32 by charmstr          #+#    #+#             */
-/*   Updated: 2020/11/30 15:53:19 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 20:31:16 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	main(int argc, char **argv)
 	pthread_t		*pthreads_array;
 	pthread_mutex_t mutex_on_mic;
 	t_parser_input	parser;
-	int				stop;
+	unsigned int	stop;
 
 	stop = 0;
 	if (!philo_parser_root(&parser, argc, argv))

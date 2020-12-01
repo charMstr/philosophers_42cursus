@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 21:08:16 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 06:18:43 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 20:24:20 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@
 ** RETURNS:	the length of the string we copied into our buffer
 */
 
-int philo_strcpy_in_buffer(char *dst, int start, const char *src)
+unsigned int philo_strcpy_in_buffer(char *dst, unsigned int start, const char *src)
 {
-	size_t i;
+	unsigned int i;
 
 	i = 0;
 	while (src[i])
@@ -36,10 +36,10 @@ int philo_strcpy_in_buffer(char *dst, int start, const char *src)
 ** note:	this function will describe on stdout the state of the philosopher.
 */
 
-void	describe_state(t_philo *philo, t_state state, int time)
+void describe_state(t_philo *philo, t_state state, unsigned int time)
 {
-	int len;
-	char buffer[32];
+	unsigned int	len;
+	char			buffer[32];
 
 	len = philo_itoa_set_buff(time, buffer, 1, 0);
 	len += philo_strcpy_in_buffer(buffer, len, philo->itoa_id);
