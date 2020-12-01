@@ -20,7 +20,7 @@ typedef struct s_parser_input
 
 typedef enum e_state
 {
-	NO_CHANGE, FORK, EAT, SLEEP, THINK, DEAD
+		FORK, EAT, SLEEP, THINK, DEAD
 }			t_state;
 
 /*
@@ -41,7 +41,6 @@ typedef enum e_state
 **	mutexes_on_forks: array of mutexes that represent each forks(eating).
 **	mutex_on_mic: pointer to a mutex for using stdout.
 **
-**	state: enum t_state value, the current state of the philosopher.
 **	forks: the shared memory (array representing the forks).
 **	timeval_last_meal: contains the timestamp of last meal
 **	timeval_tmp: the gettimeofday struct. always access timeval_tmp.tv_usec
@@ -62,7 +61,6 @@ typedef struct	s_philo
 	int		*stop;
 	pthread_mutex_t *mutexes_on_forks;
 	pthread_mutex_t *mutex_on_mic;
-	t_state state;
 	struct timeval	timeval_last_meal;
 	struct timeval	timeval_tmp;
 }				t_philo;
@@ -92,10 +90,9 @@ void			start_and_join_threads(int number_philo, pthread_t *pthreads_array, t_phi
 void			*start_philo(void *philo_void);
 
 int				get_elapsed_time(t_philo *philo);
-void			philo_take_actions(t_philo *philo, int elapsed_time);
-void			philo_try_to_eat(t_philo *philo, int time);
-int				first_fork_index_find(t_philo *philo);
-int				second_fork_index_find(t_philo *philo);
+int				philo_try_to_eat(t_philo *philo, int time, int id_first, int id_second);
+int				first_fork_index(t_philo *philo);
+int				second_fork_index(t_philo *philo);
 
 void			describe_state(t_philo *philo, t_state state, int time);
 int				philo_strcpy_in_buffer(char *dst, const char *src);

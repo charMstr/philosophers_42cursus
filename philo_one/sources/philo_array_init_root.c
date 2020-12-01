@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:35:52 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 00:34:39 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 01:13:49 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,6 @@ t_philo **philo_array_init_root(t_parser_input *parser, int number_philo, \
 **			to the correct value. The timeval_last_meal will be set in a
 **			subsequent loop at the very end.
 **
-** note:	the initial state is set to THINK. so that the philosophers are
-**			ready to try to take forks.
-**
 ** note:	philo->forks is set to null so that it will be set later.
 **
 ** RETURN:	NULL,				KO
@@ -79,7 +76,6 @@ t_philo *philo_struct_init(t_parser_input *parser, int id, int *stop)
 	philo->id = id;
 	philo_itoa_set_buff(id, philo->itoa_id);
 	philo->stop = stop;
-	philo->state = THINK;
 	philo->time_to_eat = parser->time_to_eat;
 	philo->time_to_sleep = parser->time_to_sleep;
 	philo->time_to_die = parser->time_to_die;

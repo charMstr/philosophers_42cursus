@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 14:28:44 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 00:43:34 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 01:09:43 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,20 +52,27 @@ void start_and_join_threads(int number_philo, pthread_t *pthreads_array, t_philo
 void	*start_philo(void *philo_void)
 {
 	t_philo *philo;
-	int t;
+	int time;
 
 	philo = (t_philo *)philo_void;
 	while (*(philo->stop) == 0)
 	{
 		if (philo->meals_limit && (philo->meals_count >= philo->meals_target))
 			break;
-		if ((t = get_elapsed_time(philo)) > philo->time_to_die)
+		if (((time = get_elapsed_time(philo)) == -1) \
+				|| time > philo->time_to_die)
 		{
-			describe_state(philo, DEAD, t);
+			describe_state(philo, DEAD, time);
 			*(philo->stop) = 1;
 			return (NULL);
 		}
-		philo_take_actions(philo, t);
+		if ((time = philo_try_to_eat(philo, time, first_fork_index(philo), \
+						second_fork_index(philo))))
+		{
+			describe_state(philo, DEAD, time);
+			*(philo->stop) = 1;
+			return (NULL);
+		}
 	}
 	return (NULL);
 }

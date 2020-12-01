@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 15:16:04 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 00:46:50 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 01:14:08 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,43 +40,13 @@ int	get_elapsed_time(t_philo *philo)
 }
 
 /*
-** note:	We get into this function if the philosopher was not dead.
-**			This function will try to take actions depending on the current
-**			state of the philosopher.
-**
-** note:	if a philosopher dies, it sets the stops's value to one (common to
-**			all	threads).
-*/
-
-void philo_take_actions(t_philo *philo, int elapsed_time)
-{
-	if (philo->state == THINK)
-	{
-		philo_try_to_eat(philo, elapsed_time);
-		return ;
-	}
-	else if (elapsed_time > philo->time_to_eat + philo->time_to_sleep)
-	{
-		describe_state(philo, THINK, elapsed_time);
-		philo->state = THINK;
-		return ;
-	}
-	else if (philo->state != SLEEP && elapsed_time > philo->time_to_eat)
-	{
-		describe_state(philo, SLEEP, elapsed_time);
-		philo->state = SLEEP;
-		return ;
-	}
-}
-
-/*
 ** note:	this function will decide if the first_fork_index based on the
 **			philo_id, given that odd ids will be left_handed.
 **
 ** RETURN:	first_fork_index
 */
 
-int	first_fork_index_find(t_philo *philo)
+int	first_fork_index(t_philo *philo)
 {
 	if (philo->id % 2)
 		return (philo->id - 1);
@@ -96,7 +66,7 @@ int	first_fork_index_find(t_philo *philo)
 ** RETURN:	first_fork_index
 */
 
-int	second_fork_index_find(t_philo *philo)
+int	second_fork_index(t_philo *philo)
 {
 	if (philo->id % 2)
 		return (philo->id);
@@ -111,31 +81,30 @@ int	second_fork_index_find(t_philo *philo)
 **
 ** note:	One out of two philosophers is made left handed, the other one
 **			right handed.
+**
+** RETURN:	0 OK
+**			else, the timestamp at wich philo died.
 */
 
-void philo_try_to_eat(t_philo *philo, int time)
+int philo_try_to_eat(t_philo *philo, int time, int id_first, int id_second)
 {
-	int first_fork_index;
-	int second_fork_index;
-
-	first_fork_index = first_fork_index_find(philo);
-	second_fork_index = second_fork_index_find(philo);
-	pthread_mutex_lock(&((philo->mutexes_on_forks)[first_fork_index]));
+	pthread_mutex_lock(&((philo->mutexes_on_forks)[id_first]));
 	describe_state(philo, FORK, time);
-	pthread_mutex_lock(&((philo->mutexes_on_forks)[second_fork_index]));
-	if ((time = get_elapsed_time(philo)) > philo->time_to_die)
-	{
-		describe_state(philo, DEAD, time);
-		*(philo->stop) = 1;
-		return ;
-	}
+	pthread_mutex_lock(&((philo->mutexes_on_forks)[id_second]));
+	if (((time = get_elapsed_time(philo)) == -1) || time > philo->time_to_die)
+		return (time);
 	describe_state(philo, FORK, time);
 	describe_state(philo, EAT, time);
 	usleep(philo->time_to_eat * 1000);
-	pthread_mutex_unlock(&((philo->mutexes_on_forks)[first_fork_index]));
-	pthread_mutex_unlock(&((philo->mutexes_on_forks)[second_fork_index]));
-	philo->state = EAT;
+	pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_second]));
+	pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_first]));
 	philo->timeval_last_meal = philo->timeval_tmp;
 	if (philo->meals_limit)
 		philo->meals_count++;
+	time = get_elapsed_time(philo);
+	describe_state(philo, SLEEP, time);
+	usleep(philo->time_to_sleep * 1000);
+	time = get_elapsed_time(philo);
+	describe_state(philo, THINK, time);
+	return (0);
 }
