@@ -88,7 +88,8 @@ void			start_and_join_threads(unsigned int number_philo, pthread_t *pthreads_arr
 void			*start_philo(void *philo_void);
 
 unsigned int	get_elapsed_time(t_philo *philo);
-int				philo_try_to_eat(t_philo *philo, unsigned int time);
+void philo_try_to_eat2(t_philo *philo, unsigned int time);
+void philo_try_to_eat1(t_philo *philo);
 
 void			describe_state(t_philo *philo, t_state state, unsigned int time);
 unsigned int	philo_strcpy_in_buffer(char *dst, unsigned int start, const char *src);
