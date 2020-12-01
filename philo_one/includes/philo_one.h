@@ -45,17 +45,17 @@ typedef enum e_state
 **	timeval_tmp: the gettimeofday struct. always access timeval_tmp.tv_usec
 */
 
-typedef struct s_writer
+typedef struct	s_writer_handle
 {
+	pthread_mutex_t *mutex_on_mic;
 	t_state			state;
+	char			itoa_id[8];
 	int				time;
 	int				id;
-	pthread_mutex_t *mutex_on_mic;
-}				t_writer;
+}				t_writer_handle;
 
 typedef struct	s_philo
 {
-	char	itoa_id[8];
 	int		total_number;
 	int		id;
 	int		time_to_eat;
@@ -69,8 +69,6 @@ typedef struct	s_philo
 	pthread_mutex_t *mutex_on_mic;
 	struct timeval	timeval_last_meal;
 	struct timeval	timeval_tmp;
-	int		time;
-	t_state state;
 }				t_philo;
 
 int		ft_atoi(const char *str);
@@ -86,7 +84,6 @@ void			philo_parser_get_input(t_parser_input *parser, int argc, char **argv);
 
 t_philo			**philo_array_init_root(t_parser_input *parser, int philo_number, int *stop, pthread_mutex_t *mutex_on_mic);
 t_philo			*philo_struct_init(t_parser_input *parser, int id, int *stop);
-int				philo_itoa_set_buff(int num, char buff[], int i, int j);
 int				philo_array_set_time(t_philo **philo_array, int total_philo);
 void			*philo_array_destroy(t_philo **array, int size, int mutexes_created_yet);
 

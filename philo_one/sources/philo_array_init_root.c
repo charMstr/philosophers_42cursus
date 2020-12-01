@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:35:52 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 06:15:02 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 16:41:24 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ t_philo *philo_struct_init(t_parser_input *parser, int id, int *stop)
 	philo->mutexes_on_forks = NULL;
 	philo->total_number = parser->number_philo;
 	philo->id = id;
-	philo_itoa_set_buff(id, philo->itoa_id, 1, 0);
 	philo->stop = stop;
 	philo->time_to_eat = parser->time_to_eat * 1000;
 	philo->time_to_sleep = parser->time_to_sleep * 1000;
@@ -89,42 +88,6 @@ t_philo *philo_struct_init(t_parser_input *parser, int id, int *stop)
 	else
 		philo->meals_limit = 0;
 	return (philo);
-}
-
-/*
-** note:	this function will fill the buff string.
-**
-**			It pre-adds a space at the end for us for the future concatenation
-**			of strings.
-**
-** RETURN:	the length of the itoa we just wrote.
-*/
-
-int philo_itoa_set_buff(int num, char buff[], int i, int j)
-{
-	int len;
-
-	buff[0] = ' ';
-	if (num == 0)
-	{
-		buff[i] = 48;
-		i++;
-	}
-	while (num > 0)
-	{
-		buff[i] = 48 + num % 10;
-		num = num / 10;
-		i++;
-	}
-	len = i;
-	while (--i > j)
-	{
-		buff[i] ^= buff[j];
-		buff[j] ^= buff[i];
-		buff[i] ^= buff[j];
-		j++;
-	}
-	return (len);
 }
 
 /*
