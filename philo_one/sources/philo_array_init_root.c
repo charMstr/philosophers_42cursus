@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:35:52 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 01:13:49 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 01:30:25 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,9 @@ t_philo **philo_array_init_root(t_parser_input *parser, int number_philo, \
 **
 ** note:	philo->forks is set to null so that it will be set later.
 **
+** note:	we multiply time_to[eat/sleep] by a 1000, so we dont have to do it
+**			later.
+**
 ** RETURN:	NULL,				KO
 **			pointer to t_philo *
 */
@@ -76,11 +79,10 @@ t_philo *philo_struct_init(t_parser_input *parser, int id, int *stop)
 	philo->id = id;
 	philo_itoa_set_buff(id, philo->itoa_id);
 	philo->stop = stop;
-	philo->time_to_eat = parser->time_to_eat;
-	philo->time_to_sleep = parser->time_to_sleep;
+	philo->time_to_eat = parser->time_to_eat * 1000;
+	philo->time_to_sleep = parser->time_to_sleep * 1000;
 	philo->time_to_die = parser->time_to_die;
 	philo->meals_count = 0;
-	philo->meals_done = 0;
 	philo->meals_target = parser->total_meals_each;
 	if (parser->total_meals_each != -1)
 		philo->meals_limit = 1;

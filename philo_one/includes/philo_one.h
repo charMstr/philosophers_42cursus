@@ -34,7 +34,6 @@ typedef enum e_state
 **	meals_limit: a boolean, if true, we need to count meals
 **	meals_count: counter
 **	meals_target: the number of meals before activating meals_done to true.
-**	meals_done: set to true when meals_count reaches meals_target.
 **
 **	stop: the adress of a boolean in Main stack if set to one, all philo will
 **		stop.
@@ -57,7 +56,6 @@ typedef struct	s_philo
 	int		meals_limit;
 	int		meals_count;
 	int		meals_target;
-	int		meals_done;
 	int		*stop;
 	pthread_mutex_t *mutexes_on_forks;
 	pthread_mutex_t *mutex_on_mic;

@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 15:16:04 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 01:14:08 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 01:44:41 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,18 +92,21 @@ int philo_try_to_eat(t_philo *philo, int time, int id_first, int id_second)
 	describe_state(philo, FORK, time);
 	pthread_mutex_lock(&((philo->mutexes_on_forks)[id_second]));
 	if (((time = get_elapsed_time(philo)) == -1) || time > philo->time_to_die)
+	{
+		pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_second]));
+		pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_first]));
 		return (time);
+	}
 	describe_state(philo, FORK, time);
 	describe_state(philo, EAT, time);
-	usleep(philo->time_to_eat * 1000);
+	usleep(philo->time_to_eat);
 	pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_second]));
 	pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_first]));
 	philo->timeval_last_meal = philo->timeval_tmp;
-	if (philo->meals_limit)
-		philo->meals_count++;
+	philo->meals_count++;
 	time = get_elapsed_time(philo);
 	describe_state(philo, SLEEP, time);
-	usleep(philo->time_to_sleep * 1000);
+	usleep(philo->time_to_sleep);
 	time = get_elapsed_time(philo);
 	describe_state(philo, THINK, time);
 	return (0);
