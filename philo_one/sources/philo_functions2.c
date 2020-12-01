@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 21:08:16 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 02:59:09 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 06:18:43 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	describe_state(t_philo *philo, t_state state, int time)
 	int len;
 	char buffer[32];
 
-	len = philo_itoa_set_buff(time, buffer);
+	len = philo_itoa_set_buff(time, buffer, 1, 0);
 	len += philo_strcpy_in_buffer(buffer, len, philo->itoa_id);
 	if (state == FORK)
 		len += philo_strcpy_in_buffer(buffer, len, "has taken a fork\n");

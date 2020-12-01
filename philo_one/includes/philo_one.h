@@ -76,7 +76,7 @@ void			philo_parser_get_input(t_parser_input *parser, int argc, char **argv);
 
 t_philo			**philo_array_init_root(t_parser_input *parser, int philo_number, int *stop, pthread_mutex_t *mutex_on_mic);
 t_philo			*philo_struct_init(t_parser_input *parser, int id, int *stop);
-int				philo_itoa_set_buff(int num, char buff[]);
+int				philo_itoa_set_buff(int num, char buff[], int i, int j);
 int				philo_array_set_time(t_philo **philo_array, int total_philo);
 void			*philo_array_destroy(t_philo **array, int size, int mutexes_created_yet);
 
