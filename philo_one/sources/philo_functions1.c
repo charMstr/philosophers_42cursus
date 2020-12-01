@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 15:16:04 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 04:10:21 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 04:18:58 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,9 @@ int get_timestamp(t_philo *philo)
 
 	if (gettimeofday(&philo->timeval_tmp, NULL))
 		return (-1);
-	return ((philo->timeval_tmp.tv_sec - philo->timeval_start.tv_sec) * 1000 \
-		+ (philo->timeval_tmp.tv_usec - philo->timeval_start.tv_usec) / 1000);
+	philo->time = (philo->timeval_tmp.tv_sec - philo->timeval_start.tv_sec) * 1000 \
+		+ (philo->timeval_tmp.tv_usec - philo->timeval_start.tv_usec) / 1000;
+	return (0);
 }
 
 /*
@@ -98,32 +99,32 @@ int	second_fork_index(t_philo *philo)
 **			else, the timestamp at wich philo died.
 */
 
-int philo_try_to_eat(t_philo *philo, int time, int id_first, int id_second)
+int philo_try_to_eat(t_philo *philo, int id_first, int id_second)
 {
 	pthread_mutex_lock(&((philo->mutexes_on_forks)[id_first]));
 	philo->state = FORK;
-	describe_state(philo, time);
+	describe_state(philo);
 	pthread_mutex_lock(&((philo->mutexes_on_forks)[id_second]));
-	if (((time = get_timestamp(philo)) == -1) || time - philo->last_meal > philo->time_to_die)
+	if ((get_timestamp(philo) == -1) || philo->time - philo->last_meal > philo->time_to_die)
 	{
 		pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_second]));
 		pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_first]));
-		return (time);
+		return (1);
 	}
-	describe_state(philo, time);
+	describe_state(philo);
 	philo->state = EAT;
-	describe_state(philo, time);
+	describe_state(philo);
 	usleep(philo->time_to_eat);
 	pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_second]));
 	pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_first]));
-	philo->last_meal = time;
+	philo->last_meal = philo->time;
 	philo->meals_count++;
-	time = get_timestamp(philo);
+	get_timestamp(philo);
 	philo->state = SLEEP;
-	describe_state(philo, time);
+	describe_state(philo);
 	usleep(philo->time_to_sleep);
-	time = get_timestamp(philo);
+	get_timestamp(philo);
 	philo->state = THINK;
-	describe_state(philo, time);
+	describe_state(philo);
 	return (0);
 }

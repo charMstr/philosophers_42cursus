@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 21:08:16 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 04:11:09 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 04:19:25 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,12 @@ int philo_strcpy_in_buffer(char *dst, int start, const char *src)
 ** note:	this function will describe on stdout the state of the philosopher.
 */
 
-void	describe_state(t_philo *philo, int time)
+void	describe_state(t_philo *philo)
 {
 	int len;
 	char buffer[32];
 
-	len = philo_itoa_set_buff(time, buffer);
+	len = philo_itoa_set_buff(philo->time, buffer);
 	len += philo_strcpy_in_buffer(buffer, len, philo->itoa_id);
 	if (philo->state == FORK)
 		len += philo_strcpy_in_buffer(buffer, len, "has taken a fork\n");
