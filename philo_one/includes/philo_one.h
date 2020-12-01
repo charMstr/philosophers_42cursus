@@ -47,9 +47,9 @@ typedef enum e_state
 
 typedef struct	s_philo
 {
+	char	itoa_id[32];
 	int		total_number;
 	int		id;
-	char	itoa_id[8];
 	int		time_to_eat;
 	int		time_to_sleep;
 	int		time_to_die;

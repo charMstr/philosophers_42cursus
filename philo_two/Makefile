@@ -6,7 +6,7 @@
 #    By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/01/27 17:46:05 by charmstr          #+#    #+#              #
-#    Updated: 2020/09/26 17:59:06 by mli              ###   ########.fr        #
+#    Updated: 2020/12/01 04:45:54 by charmstr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ CFLAGS = -Wall -Wextra -Werror
 CC = gcc
 NAME = philo_two
 IFLAGS = -I $(INCLUDE_PATH_PROJECT)
-LDFLAGS = -lpthrea
+LDFLAGS = -lpthread
 
 DEPS = $(INCLUDES)
 #DEPS_BONUS = $(INCLUDES_BONUS)
@@ -59,7 +59,7 @@ INCLUDE_PATH_PROJECT = ./includes/
 
 ########################### HEADER FILES ######################################
 ###############################################################################
-H_FILES =
+H_FILES =	philo_one
 
 #H_FILES_BONUS =
 
@@ -75,7 +75,15 @@ INCLUDES := $(patsubst %, $(INCLUDE_PATH_PROJECT)%.h, $(H_FILES))
 
 ########################### SRC/OBJ & BONUS FILES #############################
 ###############################################################################
-SRC_FILES =	main
+SRC_FILES =	main\
+			philo_parser_root\
+			philo_array_init_root\
+			philo_array_mutexes_manage\
+			philo_start_threads\
+			philo_functions1\
+			philo_functions2\
+			libft_funcs1
+	
 
 #BONUS_FILES =
 
