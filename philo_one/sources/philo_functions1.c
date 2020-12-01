@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 15:16:04 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 03:56:09 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 04:10:21 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,8 @@ int	second_fork_index(t_philo *philo)
 int philo_try_to_eat(t_philo *philo, int time, int id_first, int id_second)
 {
 	pthread_mutex_lock(&((philo->mutexes_on_forks)[id_first]));
-	describe_state(philo, FORK, time);
+	philo->state = FORK;
+	describe_state(philo, time);
 	pthread_mutex_lock(&((philo->mutexes_on_forks)[id_second]));
 	if (((time = get_timestamp(philo)) == -1) || time - philo->last_meal > philo->time_to_die)
 	{
@@ -109,17 +110,20 @@ int philo_try_to_eat(t_philo *philo, int time, int id_first, int id_second)
 		pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_first]));
 		return (time);
 	}
-	describe_state(philo, FORK, time);
-	describe_state(philo, EAT, time);
+	describe_state(philo, time);
+	philo->state = EAT;
+	describe_state(philo, time);
 	usleep(philo->time_to_eat);
 	pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_second]));
 	pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_first]));
 	philo->last_meal = time;
 	philo->meals_count++;
 	time = get_timestamp(philo);
-	describe_state(philo, SLEEP, time);
+	philo->state = SLEEP;
+	describe_state(philo, time);
 	usleep(philo->time_to_sleep);
 	time = get_timestamp(philo);
-	describe_state(philo, THINK, time);
+	philo->state = THINK;
+	describe_state(philo, time);
 	return (0);
 }

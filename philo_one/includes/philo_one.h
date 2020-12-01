@@ -62,6 +62,7 @@ typedef struct	s_philo
 	//struct timeval	timeval_last_meal;
 	struct timeval	timeval_tmp;
 	struct timeval	timeval_start;
+	t_state state;
 	int start;
 	int last_meal;
 }				t_philo;
@@ -96,6 +97,6 @@ int				philo_try_to_eat(t_philo *philo, int time, int id_first, int id_second);
 int				first_fork_index(t_philo *philo);
 int				second_fork_index(t_philo *philo);
 
-void			describe_state(t_philo *philo, t_state state, int time);
+void			describe_state(t_philo *philo, int time);
 int				philo_strcpy_in_buffer(char *dst, int start, const char *src);
 #endif
