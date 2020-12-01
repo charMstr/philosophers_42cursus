@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 15:16:04 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 15:25:04 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 17:07:24 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,41 +40,6 @@ int	get_elapsed_time(t_philo *philo)
 }
 
 /*
-** note:	this function will decide if the first_fork_index based on the
-**			philo_id, given that odd ids will be left_handed.
-**
-** RETURN:	first_fork_index
-*/
-
-int	first_fork_index(t_philo *philo)
-{
-	if (philo->id % 2)
-		return (philo->id - 1);
-	else
-	{
-		if (philo->id == philo->total_number)
-			return (0);
-		return (philo->id);
-	}
-}
-
-/*
-** note:	this function will decide if the second_fork_index based on the
-**			philo_id, given that odd ids will be left_handed. so they will use
-**			their right hand to reach the second fork.
-**
-** RETURN:	first_fork_index
-*/
-
-int	second_fork_index(t_philo *philo)
-{
-	if (philo->id % 2)
-		return (philo->id);
-	else
-		return (philo->id - 1);
-}
-
-/*
 ** note:	This function will try to see if the philosopher can eat: if it
 **			cannot, it will prompt a message as being dead, and the stop's
 **			value common to all threads will be set to 1.
@@ -86,22 +51,22 @@ int	second_fork_index(t_philo *philo)
 **			else, the timestamp at wich philo died.
 */
 
-int philo_try_to_eat(t_philo *philo, int time, int id_first, int id_second)
+int philo_try_to_eat(t_philo *philo, int time)
 {
-	pthread_mutex_lock(&((philo->mutexes_on_forks)[id_first]));
+	pthread_mutex_lock(&((philo->mutexes_on_forks)[philo->fork1]));
 	describe_state(philo, FORK, time);
-	pthread_mutex_lock(&((philo->mutexes_on_forks)[id_second]));
+	pthread_mutex_lock(&((philo->mutexes_on_forks)[philo->fork2]));
 	if (((time = get_elapsed_time(philo)) == -1) || time > philo->time_to_die)
 	{
-		pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_second]));
-		pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_first]));
+		pthread_mutex_unlock(&((philo->mutexes_on_forks)[philo->fork2]));
+		pthread_mutex_unlock(&((philo->mutexes_on_forks)[philo->fork1]));
 		return (time);
 	}
 	describe_state(philo, FORK, time);
 	describe_state(philo, EAT, time);
 	usleep(philo->time_to_eat);
-	pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_second]));
-	pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_first]));
+	pthread_mutex_unlock(&((philo->mutexes_on_forks)[philo->fork1]));
+	pthread_mutex_unlock(&((philo->mutexes_on_forks)[philo->fork2]));
 	philo->timeval_last_meal = philo->timeval_tmp;
 	philo->meals_count++;
 	time = get_elapsed_time(philo);
