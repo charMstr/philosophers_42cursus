@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:35:52 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 06:15:02 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 17:21:01 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ t_philo **philo_array_init_root(t_parser_input *parser, int number_philo, \
 **			pointer to t_philo *
 */
 
+
 t_philo *philo_struct_init(t_parser_input *parser, int id, int *stop)
 {
 	t_philo *philo;
@@ -78,6 +79,8 @@ t_philo *philo_struct_init(t_parser_input *parser, int id, int *stop)
 	philo->total_number = parser->number_philo;
 	philo->id = id;
 	philo_itoa_set_buff(id, philo->itoa_id, 1, 0);
+	philo->fork1 = set_fork_index(id, parser->number_philo, 1);
+	philo->fork2 = set_fork_index(id, parser->number_philo, 2);
 	philo->stop = stop;
 	philo->time_to_eat = parser->time_to_eat * 1000;
 	philo->time_to_sleep = parser->time_to_sleep * 1000;
@@ -89,6 +92,39 @@ t_philo *philo_struct_init(t_parser_input *parser, int id, int *stop)
 	else
 		philo->meals_limit = 0;
 	return (philo);
+}
+
+/*
+** note:	this function will help in setting the index of the first and
+**			second fork a philosopher will grab.
+**
+** note:	the last param, tell us either if we are setting the first (==1) or
+**			the second (==2) fork's index.
+**
+** RETURN:	the index of the fork a philosopher should grab (its the first fork
+**			or the second fork depending on 'which').
+*/
+
+int	set_fork_index(int id, int total_number, int which)
+{
+	if (which == 1)
+	{
+		if (id % 2)
+			return (id - 1);
+		else
+		{
+			if (id == total_number)
+				return (0);
+			return (id);
+		}
+	}
+	else
+	{
+		if (id % 2)
+			return (id);
+		else
+			return (id - 1);
+	}
 }
 
 /*

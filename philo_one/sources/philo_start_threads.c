@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 14:28:44 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 01:44:35 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 17:22:11 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,7 @@ void	*start_philo(void *philo_void)
 			*(philo->stop) = 1;
 			return (NULL);
 		}
-		if ((time = philo_try_to_eat(philo, time, first_fork_index(philo), \
-						second_fork_index(philo))))
+		if ((time = philo_try_to_eat(philo, time)))
 		{
 			describe_state(philo, DEAD, time);
 			*(philo->stop) = 1;
