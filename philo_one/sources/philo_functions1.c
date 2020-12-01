@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 15:16:04 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 22:58:33 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 23:27:14 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ unsigned int	get_elapsed_time(t_philo *philo)
 **			1 OK
 */
 
-void philo_try_to_eat1(t_philo *philo, t_writer (*array_writers)[])
+void philo_try_to_grab_forks(t_philo *philo, t_writer (*array_writers)[])
 {
 	pthread_mutex_lock(&((philo->mutexes_on_forks)[philo->fork1]));
 	describe_state(FORK1, get_elapsed_time(philo), &(*array_writers)[0]);
@@ -56,7 +56,7 @@ void philo_try_to_eat1(t_philo *philo, t_writer (*array_writers)[])
 	describe_state(FORK2, get_elapsed_time(philo), &(*array_writers)[1]);
 }
 
-void philo_try_to_eat2(t_philo *philo, unsigned int time, t_writer (*array_writers)[])
+void philo_starts_to_eat(t_philo *philo, unsigned int time, t_writer (*array_writers)[])
 {
 	describe_state(EAT, time, &(*array_writers)[2]);
 	usleep(philo->time_to_eat);

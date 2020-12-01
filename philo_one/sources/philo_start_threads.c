@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 14:28:44 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 22:58:43 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 23:26:51 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,22 @@ void	init_array_writers(t_writer (*array_writers)[], t_philo *philo)
 	while (i < 6)
 	{
 		(*array_writers)[i].mutex_on_mic = philo->mutex_on_mic;
+		(*array_writers)[i].id = philo->id;
 		i++;
 	}
 }
 
 /*
 ** note:	this function will be called for each philosopher.
+**
+** note:	try_to_eat1 tries to grab the two forks.
+**			then we check if the philosopher is still alive.
+**			then we can start to eat(try to eat).
+**
+** note:	the very last usleep when exiting the function is because we want
+**			to wait for the writes (in a detached thread) to be done withe our
+**			t_writer's elements, especially the buffer it uses in the write
+**			syscall.
 */
 
 void	*start_philo(void *philo_void)
@@ -83,7 +93,7 @@ void	*start_philo(void *philo_void)
 	{
 		if (!philo->meals_count)
 			break;
-		philo_try_to_eat1(philo, &array_writers);
+		philo_try_to_grab_forks(philo, &array_writers);
 		if ((time = get_elapsed_time(philo)) > philo->time_to_die)
 		{
 			pthread_mutex_unlock(&((philo->mutexes_on_forks)[philo->fork1]));
@@ -92,7 +102,8 @@ void	*start_philo(void *philo_void)
 			*(philo->stop) = 1;
 			return (NULL);
 		}
-		philo_try_to_eat2(philo, time, &array_writers);
+		philo_starts_to_eat(philo, time, &array_writers);
 	}
+	usleep(4000);
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 21:08:16 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 22:58:00 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 23:17:35 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,70 @@ unsigned int philo_strcpy_in_buffer(char *dst, unsigned int start, const char *s
 	return (i);
 }
 
+/*
+** note:	this funcition will write first a space, then write our number
+**			backwards, finally returning the index where should be placed the
+**			very next character.
+*/
+
+int philo_num_to_buff(int num, char buff[], int start)
+{
+	int i;
+
+	i = 1;
+	buff[start] = ' ';
+	if (num == 0)
+	{
+		buff[i + start] = 48;
+		i++;
+	}
+	while (num > 0)
+	{
+		buff[i + start] = 48 + num % 10;
+		num = num / 10;
+		i++;
+	}
+	return (i + start);
+}
+
+/*
+** note:	when we are done writing our spaces and the backward numbers, we
+**			finally revert the string.
+*/
+
+void philo_strrev(int len, char *buff)
+{
+	int j;
+
+	j = 0;
+	while (--len > j)
+	{
+		buff[len] ^= buff[j];
+		buff[j] ^= buff[len];
+		buff[len] ^= buff[j];
+		j++;
+	}
+}
+
+/*
+** note:	this function is started in a thread, it will set up the correct
+**			values in a buffer, thern write the buffer to stdout with the
+**			mutex's permission.
+**
+** note:	The writer structure contains the mutex_on_mic (write to stdout),
+**			and also a dedicated buffer for one of the 6 different sentences
+**			we are going to build.
+*/
+
 void	*philo_write(void *writer_void)
 {
 	t_writer *writer;
 	unsigned int	len;
 
 	writer = (t_writer*)writer_void;
-	len = philo_itoa_set_buff(writer->time, writer->buffer, 1, 0);
-	//len += philo_strcpy_in_buffer(writer->buffer, len, philo->itoa_id);
+	len = philo_num_to_buff(writer->id, writer->buffer, 0);
+	len = philo_num_to_buff(writer->time, writer->buffer, len);
+	philo_strrev(len, writer->buffer);
 	if (writer->state == FORK1 || writer->state == FORK2)
 		len += philo_strcpy_in_buffer(writer->buffer, len, "has taken a fork\n");
 	else if (writer->state == EAT)
