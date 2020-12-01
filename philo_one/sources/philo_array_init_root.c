@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:35:52 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 17:21:01 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 20:32:04 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 */
 
 t_philo **philo_array_init_root(t_parser_input *parser, int number_philo, \
-		int *stop, pthread_mutex_t *mutex_on_mic)
+		unsigned int *stop, pthread_mutex_t *mutex_on_mic)
 {
 	int		i;
 	t_philo	**philo_array;
@@ -69,28 +69,32 @@ t_philo **philo_array_init_root(t_parser_input *parser, int number_philo, \
 */
 
 
-t_philo *philo_struct_init(t_parser_input *parser, int id, int *stop)
+t_philo *philo_struct_init(t_parser_input *parser, int id, unsigned int *stop)
 {
 	t_philo *philo;
 
 	if (!(philo = malloc(sizeof(t_philo))))
 		return (NULL);
 	philo->mutexes_on_forks = NULL;
-	philo->total_number = parser->number_philo;
-	philo->id = id;
+	philo->total_number = (unsigned int)parser->number_philo;
+	philo->id = (unsigned int)id;
 	philo_itoa_set_buff(id, philo->itoa_id, 1, 0);
-	philo->fork1 = set_fork_index(id, parser->number_philo, 1);
-	philo->fork2 = set_fork_index(id, parser->number_philo, 2);
+	philo->fork1 = (unsigned int)set_fork_index(id, parser->number_philo, 1);
+	philo->fork2 = (unsigned int)set_fork_index(id, parser->number_philo, 2);
 	philo->stop = stop;
-	philo->time_to_eat = parser->time_to_eat * 1000;
-	philo->time_to_sleep = parser->time_to_sleep * 1000;
-	philo->time_to_die = parser->time_to_die;
-	philo->meals_count = 0;
-	philo->meals_target = parser->total_meals_each;
+	philo->time_to_eat = (unsigned int)(parser->time_to_eat * 1000);
+	philo->time_to_sleep = (unsigned int)(parser->time_to_sleep * 1000);
+	philo->time_to_die = (unsigned int)parser->time_to_die;
 	if (parser->total_meals_each != -1)
+	{
+		philo->meals_count = (unsigned int)parser->total_meals_each;
 		philo->meals_limit = 1;
+	}
 	else
+	{
+		philo->meals_count = 1;
 		philo->meals_limit = 0;
+	}
 	return (philo);
 }
 
@@ -136,9 +140,9 @@ int	set_fork_index(int id, int total_number, int which)
 ** RETURN:	the length of the itoa we just wrote.
 */
 
-int philo_itoa_set_buff(int num, char buff[], int i, int j)
+unsigned int philo_itoa_set_buff(unsigned int num, char buff[], unsigned int i, unsigned int j)
 {
-	int len;
+	unsigned int len;
 
 	buff[0] = ' ';
 	if (num == 0)

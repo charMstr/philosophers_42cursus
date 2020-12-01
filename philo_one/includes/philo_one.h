@@ -11,7 +11,7 @@
 
 typedef struct s_parser_input
 {
-	int number_philo;
+	int	number_philo;
 	int	time_to_die;
 	int	time_to_eat;
 	int	time_to_sleep;
@@ -32,33 +32,30 @@ typedef enum e_state
 **	time_to_die: the time it takes to die since the last meal's start.
 **
 **	meals_limit: a boolean, if true, we need to count meals
-**	meals_count: counter
-**	meals_target: the number of meals before activating meals_done to true.
+**	meals_count: counter that will decrement until zero.
 **
 **	stop: the adress of a boolean in Main stack if set to one, all philo will
 **		stop.
 **	mutexes_on_forks: array of mutexes that represent each forks(eating).
 **	mutex_on_mic: pointer to a mutex for using stdout.
 **
-**	forks: the shared memory (array representing the forks).
 **	timeval_last_meal: contains the timestamp of last meal
 **	timeval_tmp: the gettimeofday struct. always access timeval_tmp.tv_usec
 */
 
 typedef struct	s_philo
 {
-	char	itoa_id[32];
-	int		total_number;
-	int		id;
-	int		fork1;
-	int		fork2;
-	int		time_to_eat;
-	int		time_to_sleep;
-	int		time_to_die;
-	int		meals_limit;
-	int		meals_count;
-	int		meals_target;
-	int		*stop;
+	char				itoa_id[32];
+	unsigned int		total_number;
+	unsigned int		id;
+	unsigned int		fork1;
+	unsigned int		fork2;
+	unsigned int		time_to_eat;
+	unsigned int		time_to_sleep;
+	unsigned int		time_to_die;
+	unsigned int		meals_limit;
+	unsigned int		meals_count;
+	unsigned int		*stop;
 	pthread_mutex_t *mutexes_on_forks;
 	pthread_mutex_t *mutex_on_mic;
 	struct timeval	timeval_last_meal;
@@ -76,9 +73,9 @@ void			display_usage(char *argv0);
 int				philo_parser_check_input(int argc, char **argv);
 void			philo_parser_get_input(t_parser_input *parser, int argc, char **argv);
 
-t_philo			**philo_array_init_root(t_parser_input *parser, int philo_number, int *stop, pthread_mutex_t *mutex_on_mic);
-t_philo			*philo_struct_init(t_parser_input *parser, int id, int *stop);
-int				philo_itoa_set_buff(int num, char buff[], int i, int j);
+t_philo			**philo_array_init_root(t_parser_input *parser, int philo_number, unsigned int *stop, pthread_mutex_t *mutex_on_mic);
+t_philo			*philo_struct_init(t_parser_input *parser, int id, unsigned int *stop);
+unsigned int	philo_itoa_set_buff(unsigned int num, char buff[], unsigned int i, unsigned int j);
 int				set_fork_index(int id, int total_number, int which);
 int				philo_array_set_time(t_philo **philo_array, int total_philo);
 void			*philo_array_destroy(t_philo **array, int size, int mutexes_created_yet);
@@ -87,12 +84,12 @@ int				philo_array_init_mutexes(t_philo **philo_array, int number_philo, pthread
 pthread_mutex_t	*create_mutexes_on_forks_array(int number_philo);
 void			destroy_and_free_mutexes_on_forks(pthread_mutex_t *mutexes_on_forks, int num);
 
-void			start_and_join_threads(int number_philo, pthread_t *pthreads_array, t_philo **philo_array);
+void			start_and_join_threads(unsigned int number_philo, pthread_t *pthreads_array, t_philo **philo_array);
 void			*start_philo(void *philo_void);
 
-int				get_elapsed_time(t_philo *philo);
-int				philo_try_to_eat(t_philo *philo, int time);
+unsigned int	get_elapsed_time(t_philo *philo);
+int				philo_try_to_eat(t_philo *philo, unsigned int time);
 
-void			describe_state(t_philo *philo, t_state state, int time);
-int				philo_strcpy_in_buffer(char *dst, int start, const char *src);
+void			describe_state(t_philo *philo, t_state state, unsigned int time);
+unsigned int	philo_strcpy_in_buffer(char *dst, unsigned int start, const char *src);
 #endif
