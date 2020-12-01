@@ -6,7 +6,7 @@
 #    By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/01/27 17:46:05 by charmstr          #+#    #+#              #
-#    Updated: 2020/12/01 06:21:30 by charmstr         ###   ########.fr        #
+#    Updated: 2020/12/02 00:40:03 by charmstr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -78,7 +78,6 @@ INCLUDES := $(patsubst %, $(INCLUDE_PATH_PROJECT)%.h, $(H_FILES))
 SRC_FILES =	main\
 			philo_parser_root\
 			philo_array_init_root\
-			philo_array_mutexes_manage\
 			philo_start_threads\
 			philo_functions1\
 			philo_functions2\

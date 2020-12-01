@@ -6,12 +6,11 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 14:28:44 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 23:26:51 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 00:51:20 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_one.h"
-#include <stdio.h>
 
 /*
 ** note:	This function will launch our threads.

@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:35:52 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 06:15:02 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 00:46:42 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,11 @@
 */
 
 t_philo **philo_array_init_root(t_parser_input *parser, int number_philo, \
-		int *stop, pthread_mutex_t *mutex_on_mic)
+		unsigned int *stop)
 {
 	int		i;
 	t_philo	**philo_array;
+	sem_t	*semaphor;
 
 	i = 0;
 	if (!(philo_array = malloc(sizeof(t_philo*) * number_philo)))
@@ -44,13 +45,13 @@ t_philo **philo_array_init_root(t_parser_input *parser, int number_philo, \
 	while (i < number_philo)
 	{
 		if (!(philo_array[i] = philo_struct_init(parser, i + 1, stop)))
-			return (philo_array_destroy(philo_array, i, NODEL_MUTEXES));
+			return (philo_array_destroy(philo_array, i, NODEL_SEMAPH));
 		i++;
 	}
-	if (!(philo_array_init_mutexes(philo_array, number_philo, mutex_on_mic)))
-		return (philo_array_destroy(philo_array, number_philo, NODEL_MUTEXES));
+	if (!(philo_array_init_semaphore(philo_array, number_philo))
+		return (philo_array_destroy(philo_array, number_philo, NODEL_SEMAPH));
 	if (!philo_array_set_time(philo_array, number_philo))
-		return (philo_array_destroy(philo_array, number_philo, DEL_MUTEXES));
+		return (philo_array_destroy(philo_array, number_philo, DEL_SEMAPH));
 	return (philo_array);
 }
 
@@ -68,63 +69,55 @@ t_philo **philo_array_init_root(t_parser_input *parser, int number_philo, \
 **			pointer to t_philo *
 */
 
-t_philo *philo_struct_init(t_parser_input *parser, int id, int *stop)
+t_philo *philo_struct_init(t_parser_input *parser, int id, unsigned int *stop)
 {
 	t_philo *philo;
 
 	if (!(philo = malloc(sizeof(t_philo))))
 		return (NULL);
-	philo->mutexes_on_forks = NULL;
-	philo->total_number = parser->number_philo;
-	philo->id = id;
-	philo_itoa_set_buff(id, philo->itoa_id, 1, 0);
+	philo->semaphor = NULL;
+	philo->total_number = (unsigned int)parser->number_philo;
+	philo->id = (unsigned int)id;
 	philo->stop = stop;
-	philo->time_to_eat = parser->time_to_eat * 1000;
-	philo->time_to_sleep = parser->time_to_sleep * 1000;
-	philo->time_to_die = parser->time_to_die;
-	philo->meals_count = 0;
-	philo->meals_target = parser->total_meals_each;
+	philo->time_to_eat = (unsigned int)(parser->time_to_eat * 1000);
+	philo->time_to_sleep = (unsigned int)(parser->time_to_sleep * 1000);
+	philo->time_to_die = (unsigned int)parser->time_to_die;
 	if (parser->total_meals_each != -1)
+	{
+		philo->meals_count = (unsigned int)parser->total_meals_each;
 		philo->meals_limit = 1;
+	}
 	else
+	{
+		philo->meals_count = 1;
 		philo->meals_limit = 0;
+	}
 	return (philo);
 }
 
 /*
-** note:	this function will fill the buff string.
+** note:	this function will simply creat the semaphor and place it in each
+**			philo structure.
 **
-**			It pre-adds a space at the end for us for the future concatenation
-**			of strings.
-**
-** RETURN:	the length of the itoa we just wrote.
+** RETURN:	1 OK
+**			0 KO
 */
 
-int philo_itoa_set_buff(int num, char buff[], int i, int j)
+int philo_array_init_semaphore(t_philo **philo_array, int number_philo)
 {
-	int len;
+	sem_t	*semaphore;
+	int		i;
 
-	buff[0] = ' ';
-	if (num == 0)
+	i = 0;
+	semaphore = sem_open("semaph_philo", O_CREAT | O_EXCL, 0644, number_philo);
+	if (semaphore == SEM_FAILED)
+		return (0);
+	while (i < number_philo)
 	{
-		buff[i] = 48;
+		philo_array[i]->semaphor = semaphore;
 		i++;
 	}
-	while (num > 0)
-	{
-		buff[i] = 48 + num % 10;
-		num = num / 10;
-		i++;
-	}
-	len = i;
-	while (--i > j)
-	{
-		buff[i] ^= buff[j];
-		buff[j] ^= buff[i];
-		buff[i] ^= buff[j];
-		j++;
-	}
-	return (len);
+	return (1);
 }
 
 /*
@@ -142,12 +135,12 @@ int philo_itoa_set_buff(int num, char buff[], int i, int j)
 ** RETURN: NULL, always
 */
 
-void *philo_array_destroy(t_philo **array, int size, int mutexes_created_yet)
+void *philo_array_destroy(t_philo **array, int size, int semaphor_created_yet)
 {
-	if (size > 0 && mutexes_created_yet)
+	if (size > 0 && semaphor_created_yet)
 	{
-		destroy_and_free_mutexes_on_forks(array[0]->mutexes_on_forks, size);
-		pthread_mutex_destroy(array[0]->mutex_on_mic);
+		sem_close(array[0]->semaphor);
+		sem_unlink("semaph_philo");
 	}
 	while (--size >= 0)
 	{

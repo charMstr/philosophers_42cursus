@@ -6,11 +6,11 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 15:16:04 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 01:44:41 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 00:49:07 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_one.h"
+#include "philo_two.h"
 
 /*
 ** note:	This function returns the time elapsed since the last meal.
@@ -20,12 +20,9 @@
 **			-1 failure with gettimeofday func.
 */
 
-int	get_elapsed_time(t_philo *philo)
+unsigned int	get_elapsed_time(t_philo *philo)
 {
-	int res;
-
-	if (gettimeofday(&philo->timeval_tmp, NULL))
-		return (-1);
+	gettimeofday(&philo->timeval_tmp, NULL);
 	if (philo->timeval_last_meal.tv_sec == philo->timeval_tmp.tv_sec)
 	{
 		return ((philo->timeval_tmp.tv_usec - \
@@ -33,81 +30,42 @@ int	get_elapsed_time(t_philo *philo)
 	}
 	else
 	{
-		res = (philo->timeval_tmp.tv_sec - philo->timeval_last_meal.tv_sec - 1) * 1000;
-		res += (1000000 - philo->timeval_last_meal.tv_usec + philo->timeval_tmp.tv_usec) / 1000;
-		return (res);
+		return ((philo->timeval_tmp.tv_sec - philo->timeval_last_meal.tv_sec \
+			- 1) * 1000 + (1000000 - philo->timeval_last_meal.tv_usec \
+				+ philo->timeval_tmp.tv_usec) / 1000);
 	}
-}
-
-/*
-** note:	this function will decide if the first_fork_index based on the
-**			philo_id, given that odd ids will be left_handed.
-**
-** RETURN:	first_fork_index
-*/
-
-int	first_fork_index(t_philo *philo)
-{
-	if (philo->id % 2)
-		return (philo->id - 1);
-	else
-	{
-		if (philo->id == philo->total_number)
-			return (0);
-		return (philo->id);
-	}
-}
-
-/*
-** note:	this function will decide if the second_fork_index based on the
-**			philo_id, given that odd ids will be left_handed. so they will use
-**			their right hand to reach the second fork.
-**
-** RETURN:	first_fork_index
-*/
-
-int	second_fork_index(t_philo *philo)
-{
-	if (philo->id % 2)
-		return (philo->id);
-	else
-		return (philo->id - 1);
 }
 
 /*
 ** note:	This function will try to see if the philosopher can eat: if it
-**			cannot, it will prompt a message as being dead, and the stop's
-**			value common to all threads will be set to 1.
+**			cannot, it returns 0 and the stop's value common to all threads
+**			will be set to 1.
 **
 ** note:	One out of two philosophers is made left handed, the other one
 **			right handed.
 **
-** RETURN:	0 OK
-**			else, the timestamp at wich philo died.
+** RETURN:	0 KO
+**			1 OK
 */
 
-int philo_try_to_eat(t_philo *philo, int time, int id_first, int id_second)
+void philo_try_to_grab_forks(t_philo *philo, t_writer (*array_writers)[])
 {
-	pthread_mutex_lock(&((philo->mutexes_on_forks)[id_first]));
-	describe_state(philo, FORK, time);
-	pthread_mutex_lock(&((philo->mutexes_on_forks)[id_second]));
-	if (((time = get_elapsed_time(philo)) == -1) || time > philo->time_to_die)
-	{
-		pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_second]));
-		pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_first]));
-		return (time);
-	}
-	describe_state(philo, FORK, time);
-	describe_state(philo, EAT, time);
+	pthread_mutex_lock(&((philo->mutexes_on_forks)[philo->fork1]));
+	describe_state(FORK1, get_elapsed_time(philo), &(*array_writers)[0]);
+	pthread_mutex_lock(&((philo->mutexes_on_forks)[philo->fork2]));
+	describe_state(FORK2, get_elapsed_time(philo), &(*array_writers)[1]);
+}
+
+void philo_starts_to_eat(t_philo *philo, unsigned int time, t_writer (*array_writers)[])
+{
+	describe_state(EAT, time, &(*array_writers)[2]);
 	usleep(philo->time_to_eat);
-	pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_second]));
-	pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_first]));
+	pthread_mutex_unlock(&((philo->mutexes_on_forks)[philo->fork1]));
+	pthread_mutex_unlock(&((philo->mutexes_on_forks)[philo->fork2]));
 	philo->timeval_last_meal = philo->timeval_tmp;
-	philo->meals_count++;
-	time = get_elapsed_time(philo);
-	describe_state(philo, SLEEP, time);
+	if (philo->meals_limit)
+		philo->meals_count--;
+	describe_state(SLEEP, get_elapsed_time(philo), &(*array_writers)[3]);
 	usleep(philo->time_to_sleep);
-	time = get_elapsed_time(philo);
-	describe_state(philo, THINK, time);
-	return (0);
+	describe_state(THINK, get_elapsed_time(philo), &(*array_writers)[4]);
 }

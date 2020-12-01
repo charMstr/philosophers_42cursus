@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo_one.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/12/02 00:51:40 by charmstr          #+#    #+#             */
+/*   Updated: 2020/12/02 00:52:26 by charmstr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_ONE_H
 # define PHILO_ONE_H
 
@@ -132,4 +144,5 @@ unsigned int	philo_strcpy_in_buffer(char *dst, unsigned int start, \
 void			*philo_write(void *writer_void);
 void			philo_strrev(int len, char *buff);
 int				philo_num_to_buff(int num, char buff[], int start);
+
 #endif
