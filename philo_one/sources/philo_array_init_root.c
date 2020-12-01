@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:35:52 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 01:30:25 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 03:51:40 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,7 +187,8 @@ int philo_array_set_time(t_philo **philo_array, int total_philo)
 		return (0);
 	while (i < total_philo)
 	{
-		philo_array[i]->timeval_last_meal = time_val;
+		philo_array[i]->last_meal = 0;
+		philo_array[i]->timeval_start = time_val;
 		i++;
 	}
 	return (1);

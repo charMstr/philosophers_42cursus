@@ -49,7 +49,7 @@ typedef struct	s_philo
 {
 	int		total_number;
 	int		id;
-	char	itoa_id[8];
+	char	itoa_id[16];
 	int		time_to_eat;
 	int		time_to_sleep;
 	int		time_to_die;
@@ -59,8 +59,11 @@ typedef struct	s_philo
 	int		*stop;
 	pthread_mutex_t *mutexes_on_forks;
 	pthread_mutex_t *mutex_on_mic;
-	struct timeval	timeval_last_meal;
+	//struct timeval	timeval_last_meal;
 	struct timeval	timeval_tmp;
+	struct timeval	timeval_start;
+	int start;
+	int last_meal;
 }				t_philo;
 
 int		ft_atoi(const char *str);
@@ -88,6 +91,7 @@ void			start_and_join_threads(int number_philo, pthread_t *pthreads_array, t_phi
 void			*start_philo(void *philo_void);
 
 int				get_elapsed_time(t_philo *philo);
+int				get_timestamp(t_philo *philo);
 int				philo_try_to_eat(t_philo *philo, int time, int id_first, int id_second);
 int				first_fork_index(t_philo *philo);
 int				second_fork_index(t_philo *philo);

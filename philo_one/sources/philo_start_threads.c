@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 14:28:44 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 01:44:35 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 03:56:39 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,7 @@ void	*start_philo(void *philo_void)
 	{
 		if (philo->meals_limit && (philo->meals_count >= philo->meals_target))
 			break;
-		if (((time = get_elapsed_time(philo)) == -1) \
-				|| time > philo->time_to_die)
+		if (((time = get_timestamp(philo)) == -1) || time - philo->last_meal > philo->time_to_die)
 		{
 			describe_state(philo, DEAD, time);
 			*(philo->stop) = 1;

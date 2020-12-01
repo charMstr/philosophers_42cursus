@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 15:16:04 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 01:44:41 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/01 03:56:09 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 **			-1 failure with gettimeofday func.
 */
 
+/*
 int	get_elapsed_time(t_philo *philo)
 {
 	int res;
@@ -37,6 +38,17 @@ int	get_elapsed_time(t_philo *philo)
 		res += (1000000 - philo->timeval_last_meal.tv_usec + philo->timeval_tmp.tv_usec) / 1000;
 		return (res);
 	}
+}
+*/
+
+int get_timestamp(t_philo *philo)
+{
+	//struct timeval	timeval_tmp;
+
+	if (gettimeofday(&philo->timeval_tmp, NULL))
+		return (-1);
+	return ((philo->timeval_tmp.tv_sec - philo->timeval_start.tv_sec) * 1000 \
+		+ (philo->timeval_tmp.tv_usec - philo->timeval_start.tv_usec) / 1000);
 }
 
 /*
@@ -91,7 +103,7 @@ int philo_try_to_eat(t_philo *philo, int time, int id_first, int id_second)
 	pthread_mutex_lock(&((philo->mutexes_on_forks)[id_first]));
 	describe_state(philo, FORK, time);
 	pthread_mutex_lock(&((philo->mutexes_on_forks)[id_second]));
-	if (((time = get_elapsed_time(philo)) == -1) || time > philo->time_to_die)
+	if (((time = get_timestamp(philo)) == -1) || time - philo->last_meal > philo->time_to_die)
 	{
 		pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_second]));
 		pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_first]));
@@ -102,12 +114,12 @@ int philo_try_to_eat(t_philo *philo, int time, int id_first, int id_second)
 	usleep(philo->time_to_eat);
 	pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_second]));
 	pthread_mutex_unlock(&((philo->mutexes_on_forks)[id_first]));
-	philo->timeval_last_meal = philo->timeval_tmp;
+	philo->last_meal = time;
 	philo->meals_count++;
-	time = get_elapsed_time(philo);
+	time = get_timestamp(philo);
 	describe_state(philo, SLEEP, time);
 	usleep(philo->time_to_sleep);
-	time = get_elapsed_time(philo);
+	time = get_timestamp(philo);
 	describe_state(philo, THINK, time);
 	return (0);
 }
