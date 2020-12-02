@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 15:16:04 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 03:11:53 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 05:24:24 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,26 +48,34 @@ unsigned int	get_elapsed_time(t_philo *philo)
 **			1 OK
 */
 
-void philo_try_to_grab_forks(t_philo *philo, t_writer (*array_writers)[])
+void philo_try_to_grab_forks(t_philo *philo)
 {
 	sem_wait(philo->sema_sit_down);
 	sem_wait(philo->sema_forks);
-	describe_state(FORK1, get_elapsed_time(philo), &(*array_writers)[0]);
+	philo->time = get_elapsed_time(philo);
+	philo->state = FORK;
+	write_without_lock(philo);
 	sem_wait(philo->sema_forks);
-	describe_state(FORK2, get_elapsed_time(philo), &(*array_writers)[1]);
+	philo->time = get_elapsed_time(philo);
+	write_without_lock(philo);
 }
 
-void philo_starts_to_eat(t_philo *philo, unsigned int time, t_writer (*array_writers)[])
+void philo_starts_to_eat(t_philo *philo)
 {
-	describe_state(EAT, time, &(*array_writers)[2]);
+	philo->state = EAT;
+	write_without_lock(philo);
 	usleep(philo->time_to_eat);
-	sem_post(philo->sema_sit_down);
 	sem_post(philo->sema_forks);
+	sem_post(philo->sema_sit_down);
 	sem_post(philo->sema_forks);
 	philo->timeval_last_meal = philo->timeval_tmp;
 	if (philo->meals_limit)
 		philo->meals_count--;
-	describe_state(SLEEP, get_elapsed_time(philo), &(*array_writers)[3]);
+	philo->time = get_elapsed_time(philo);
+	philo->state = SLEEP;
+	write_without_lock(philo);
 	usleep(philo->time_to_sleep);
-	describe_state(THINK, get_elapsed_time(philo), &(*array_writers)[4]);
+	philo->time = get_elapsed_time(philo);
+	philo->state = THINK;
+	write_without_lock(philo);
 }
