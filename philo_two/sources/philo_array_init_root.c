@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:35:52 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 02:56:58 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 07:39:05 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,13 @@ t_philo **philo_array_init_root(t_parser_input *parser, int number_philo, \
 	while (i < number_philo)
 	{
 		if (!(philo_array[i] = philo_struct_init(parser, i + 1, stop)))
-			return (philo_array_destroy(philo_array, i, NODEL_SEMAPH));
+			return (philo_array_destroy(philo_array, i));
 		i++;
 	}
 	if (!(philo_array_init_semaphore(philo_array, number_philo)))
-		return (philo_array_destroy(philo_array, number_philo, NODEL_SEMAPH));
+		return (philo_array_destroy(philo_array, number_philo));
 	if (!philo_array_set_time(philo_array, number_philo))
-		return (philo_array_destroy(philo_array, number_philo, DEL_SEMAPH));
+		return (philo_array_destroy(philo_array, number_philo));
 	return (philo_array);
 }
 
@@ -120,10 +120,11 @@ int philo_array_init_semaphore(t_philo **philo_array, int number_philo)
 			number_philo - 1);
 	if (sema_sit_down == SEM_FAILED)
 	{
-		sem_close(sema_forks);
 		sem_unlink("semaph_philo_forks");
 		return (0);
 	}
+	sem_unlink("semaph_philo_sit_down");
+	sem_unlink("semaph_philo_forks");
 	while (i < number_philo)
 	{
 		philo_array[i]->sema_forks = sema_forks;
@@ -141,22 +142,11 @@ int philo_array_init_semaphore(t_philo **philo_array, int number_philo)
 **			array, setting up the mutexes, and setting up the start time.
 **			Therefore the mutexes might not be created/initialized yet.
 **
-** note:	if mutexes were created: inside the very first t_philo struct
-**			pointer, we free the common	data only once: the array of
-**			initialized mutexes for forks, and the mic mutex.
-**
 ** RETURN: NULL, always
 */
 
-void *philo_array_destroy(t_philo **array, int size, int semaphor_created_yet)
+void *philo_array_destroy(t_philo **array, int size)
 {
-	if (size > 0 && semaphor_created_yet)
-	{
-		sem_close(array[0]->sema_sit_down);
-		sem_unlink("semaph_philo_sit_down");
-		sem_close(array[0]->sema_forks);
-		sem_unlink("semaph_philo_forks");
-	}
 	while (--size >= 0)
 	{
 		free(array[size]);

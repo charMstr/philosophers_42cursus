@@ -1,21 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_functions2.c                                 :+:      :+:    :+:   */
+/*   philo_write_stdout.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 21:08:16 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 05:22:17 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 05:00:16 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_two.h"
+#include "philo_one.h"
 
 /*
 ** note:	this function will copy a string into our buffer, starting at
 **			start index.
-** ** RETURNS:	the length of the string we copied into our buffer
+**
+** RETURNS:	the length of the string we copied into our buffer
 */
 
 unsigned int philo_strcpy_in_buffer(char *dst, unsigned int start, const char *src)
@@ -75,11 +76,6 @@ void philo_strrev(int len, char *buff)
 		j++;
 	}
 }
-
-/*
-** note:	no need for a write, we use an atomic write with a memory aligned
-**			on 32 bits!
-*/
 
 void write_without_lock(t_philo *philo)
 {

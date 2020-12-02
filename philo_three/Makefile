@@ -6,7 +6,7 @@
 #    By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/01/27 17:46:05 by charmstr          #+#    #+#              #
-#    Updated: 2020/09/26 17:59:06 by mli              ###   ########.fr        #
+#    Updated: 2020/12/02 07:12:05 by charmstr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -59,7 +59,7 @@ INCLUDE_PATH_PROJECT = ./includes/
 
 ########################### HEADER FILES ######################################
 ###############################################################################
-H_FILES =
+H_FILES =	philo_three
 
 #H_FILES_BONUS =
 
@@ -75,7 +75,14 @@ INCLUDES := $(patsubst %, $(INCLUDE_PATH_PROJECT)%.h, $(H_FILES))
 
 ########################### SRC/OBJ & BONUS FILES #############################
 ###############################################################################
-SRC_FILES =	main
+SRC_FILES =	main\
+			philo_parser_root\
+			philo_load_struct\
+			philo_fork_and_start\
+			philo_gettime_and_eat\
+			philo_write_stdout\
+			libft_funcs1
+	
 
 #BONUS_FILES =
 

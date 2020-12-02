@@ -6,7 +6,7 @@
 #    By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/01/27 17:46:05 by charmstr          #+#    #+#              #
-#    Updated: 2020/11/30 21:08:48 by charmstr         ###   ########.fr        #
+#    Updated: 2020/12/02 06:51:16 by charmstr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -80,8 +80,8 @@ SRC_FILES =	main\
 			philo_array_init_root\
 			philo_array_mutexes_manage\
 			philo_start_threads\
-			philo_functions1\
-			philo_functions2\
+			philo_gettime_and_eat\
+			philo_write_stdout\
 			libft_funcs1
 	
 
