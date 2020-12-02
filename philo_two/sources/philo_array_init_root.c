@@ -6,11 +6,13 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:35:52 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 00:46:42 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 02:56:58 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_one.h"
+#include "philo_two.h"
+//remove me
+#include <stdio.h>
 
 /*
 ** note:	this function is the basis for building an array of structures,
@@ -37,7 +39,6 @@ t_philo **philo_array_init_root(t_parser_input *parser, int number_philo, \
 {
 	int		i;
 	t_philo	**philo_array;
-	sem_t	*semaphor;
 
 	i = 0;
 	if (!(philo_array = malloc(sizeof(t_philo*) * number_philo)))
@@ -48,7 +49,7 @@ t_philo **philo_array_init_root(t_parser_input *parser, int number_philo, \
 			return (philo_array_destroy(philo_array, i, NODEL_SEMAPH));
 		i++;
 	}
-	if (!(philo_array_init_semaphore(philo_array, number_philo))
+	if (!(philo_array_init_semaphore(philo_array, number_philo)))
 		return (philo_array_destroy(philo_array, number_philo, NODEL_SEMAPH));
 	if (!philo_array_set_time(philo_array, number_philo))
 		return (philo_array_destroy(philo_array, number_philo, DEL_SEMAPH));
@@ -75,7 +76,8 @@ t_philo *philo_struct_init(t_parser_input *parser, int id, unsigned int *stop)
 
 	if (!(philo = malloc(sizeof(t_philo))))
 		return (NULL);
-	philo->semaphor = NULL;
+	philo->sema_sit_down = NULL;
+	philo->sema_forks = NULL;
 	philo->total_number = (unsigned int)parser->number_philo;
 	philo->id = (unsigned int)id;
 	philo->stop = stop;
@@ -105,16 +107,27 @@ t_philo *philo_struct_init(t_parser_input *parser, int id, unsigned int *stop)
 
 int philo_array_init_semaphore(t_philo **philo_array, int number_philo)
 {
-	sem_t	*semaphore;
+	sem_t	*sema_forks;
+	sem_t	*sema_sit_down;
 	int		i;
 
 	i = 0;
-	semaphore = sem_open("semaph_philo", O_CREAT | O_EXCL, 0644, number_philo);
-	if (semaphore == SEM_FAILED)
+	sema_forks = sem_open("semaph_philo_forks", O_CREAT, 0644, \
+			number_philo);
+	if (sema_forks == SEM_FAILED)
 		return (0);
+	sema_sit_down = sem_open("semaph_philo_sit_down", O_CREAT, 0644, \
+			number_philo - 1);
+	if (sema_sit_down == SEM_FAILED)
+	{
+		sem_close(sema_forks);
+		sem_unlink("semaph_philo_forks");
+		return (0);
+	}
 	while (i < number_philo)
 	{
-		philo_array[i]->semaphor = semaphore;
+		philo_array[i]->sema_forks = sema_forks;
+		philo_array[i]->sema_sit_down = sema_sit_down;
 		i++;
 	}
 	return (1);
@@ -139,8 +152,10 @@ void *philo_array_destroy(t_philo **array, int size, int semaphor_created_yet)
 {
 	if (size > 0 && semaphor_created_yet)
 	{
-		sem_close(array[0]->semaphor);
-		sem_unlink("semaph_philo");
+		sem_close(array[0]->sema_sit_down);
+		sem_unlink("semaph_philo_sit_down");
+		sem_close(array[0]->sema_forks);
+		sem_unlink("semaph_philo_forks");
 	}
 	while (--size >= 0)
 	{

@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:51:40 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 00:52:26 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 00:59:00 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ typedef struct	s_writer
 
 typedef struct		s_philo
 {
-	char			itoa_id[32];
 	unsigned int	total_number;
 	unsigned int	id;
 	unsigned int	fork1;

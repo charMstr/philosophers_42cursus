@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 14:28:44 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 00:48:31 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 03:11:58 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	init_array_writers(t_writer (*array_writers)[], t_philo *philo)
 	i = 0;
 	while (i < 6)
 	{
-		(*array_writers)[i].mutex_on_mic = philo->mutex_on_mic;
+		(*array_writers)[i].sema_write = philo->sema_sit_down;
 		(*array_writers)[i].id = philo->id;
 		i++;
 	}
@@ -82,9 +82,9 @@ void	init_array_writers(t_writer (*array_writers)[], t_philo *philo)
 
 void	*start_philo(void *philo_void)
 {
-	t_philo *philo;
-	unsigned int time;
-	t_writer array_writers[6];
+	t_philo			*philo;
+	unsigned int	time;
+	t_writer		array_writers[6];
 
 	philo = (t_philo *)philo_void;
 	init_array_writers(&array_writers, philo);
@@ -95,8 +95,9 @@ void	*start_philo(void *philo_void)
 		philo_try_to_grab_forks(philo, &array_writers);
 		if ((time = get_elapsed_time(philo)) > philo->time_to_die)
 		{
-			pthread_mutex_unlock(&((philo->mutexes_on_forks)[philo->fork1]));
-			pthread_mutex_unlock(&((philo->mutexes_on_forks)[philo->fork2]));
+			sem_post(philo->sema_sit_down);
+			sem_post(philo->sema_forks);
+			sem_post(philo->sema_forks);
 			describe_state(DEAD, time, &(array_writers[5]));
 			*(philo->stop) = 1;
 			return (NULL);

@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 21:08:16 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 23:17:35 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 03:13:33 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,9 +106,9 @@ void	*philo_write(void *writer_void)
 		len += philo_strcpy_in_buffer(writer->buffer, len, "is thinking\n");
 	else
 		len += philo_strcpy_in_buffer(writer->buffer, len, "died\n");
-	pthread_mutex_lock(writer->mutex_on_mic);
+//	pthread_mutex_lock(writer->mutex_on_mic);
 	write(1, writer->buffer, len);
-	pthread_mutex_unlock(writer->mutex_on_mic);
+//	pthread_mutex_unlock(writer->mutex_on_mic);
 	return (NULL);
 }
 

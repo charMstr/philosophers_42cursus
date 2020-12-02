@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 15:16:04 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 00:49:07 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 03:11:53 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,10 @@ unsigned int	get_elapsed_time(t_philo *philo)
 
 void philo_try_to_grab_forks(t_philo *philo, t_writer (*array_writers)[])
 {
-	pthread_mutex_lock(&((philo->mutexes_on_forks)[philo->fork1]));
+	sem_wait(philo->sema_sit_down);
+	sem_wait(philo->sema_forks);
 	describe_state(FORK1, get_elapsed_time(philo), &(*array_writers)[0]);
-	pthread_mutex_lock(&((philo->mutexes_on_forks)[philo->fork2]));
+	sem_wait(philo->sema_forks);
 	describe_state(FORK2, get_elapsed_time(philo), &(*array_writers)[1]);
 }
 
@@ -60,8 +61,9 @@ void philo_starts_to_eat(t_philo *philo, unsigned int time, t_writer (*array_wri
 {
 	describe_state(EAT, time, &(*array_writers)[2]);
 	usleep(philo->time_to_eat);
-	pthread_mutex_unlock(&((philo->mutexes_on_forks)[philo->fork1]));
-	pthread_mutex_unlock(&((philo->mutexes_on_forks)[philo->fork2]));
+	sem_post(philo->sema_sit_down);
+	sem_post(philo->sema_forks);
+	sem_post(philo->sema_forks);
 	philo->timeval_last_meal = philo->timeval_tmp;
 	if (philo->meals_limit)
 		philo->meals_count--;
