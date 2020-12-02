@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 15:16:04 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 07:18:50 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 08:47:08 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ unsigned int	get_elapsed_time(t_philo *philo)
 **			1 OK
 */
 
-void philo_try_to_grab_forks(t_philo *philo)
+void			philo_try_to_grab_forks(t_philo *philo)
 {
 	sem_wait(philo->sema_sit_down);
 	sem_wait(philo->sema_forks);
@@ -60,7 +60,7 @@ void philo_try_to_grab_forks(t_philo *philo)
 	write_without_lock(philo);
 }
 
-void philo_starts_to_eat(t_philo *philo)
+void			philo_starts_to_eat(t_philo *philo)
 {
 	philo->state = EAT;
 	write_without_lock(philo);

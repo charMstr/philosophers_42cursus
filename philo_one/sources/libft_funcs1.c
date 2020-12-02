@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 21:39:33 by charmstr          #+#    #+#             */
-/*   Updated: 2020/11/30 21:39:58 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 08:30:26 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	ft_putstr(char *str)
 ** RETURN: 0 if the character is not a digit
 */
 
-int	ft_isdigit(int c)
+int		ft_isdigit(int c)
 {
 	if (c >= 48 && c <= 57)
 		return (1);
@@ -75,7 +75,7 @@ int	ft_isdigit(int c)
 **			0 if not all chars are numbers.
 */
 
-int str_isdigit(char *str)
+int		str_isdigit(char *str)
 {
 	int i;
 

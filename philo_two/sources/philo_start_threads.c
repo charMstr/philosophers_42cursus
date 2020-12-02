@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 14:28:44 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 05:30:44 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 08:40:16 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,16 @@
 **			gotta die.
 */
 
-void start_and_join_threads(unsigned int number_philo, pthread_t *pthreads_array, t_philo **philo_array)
+void	start_and_join_threads(unsigned int number_philo, \
+		pthread_t *pthreads_array, t_philo **philo_array)
 {
 	unsigned int		i;
 
 	i = 0;
 	while (i < number_philo)
 	{
-		pthread_create(&pthreads_array[i], NULL, start_philo, (void*)philo_array[i]);
+		pthread_create(&pthreads_array[i], NULL, start_philo, \
+				(void*)philo_array[i]);
 		i++;
 	}
 	i = 0;
@@ -65,7 +67,7 @@ void	*start_philo(void *philo_void)
 	while (*(philo->stop) == 0)
 	{
 		if (!philo->meals_count)
-			break;
+			break ;
 		philo_try_to_grab_forks(philo);
 		if ((philo->time = get_elapsed_time(philo)) > philo->time_to_die)
 		{

@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 13:58:35 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 03:35:31 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 08:29:26 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,11 @@
 **			0 KO. some malloc or pthread_mutex_init failed.
 */
 
-int philo_array_init_mutexes(t_philo **philo_array, int number_philo)
+int				philo_array_init_mutexes(t_philo **philo_array, \
+		int number_philo)
 {
-	pthread_mutex_t *mutexes_on_forks;
-	int i;
+	pthread_mutex_t	*mutexes_on_forks;
+	int				i;
 
 	i = 0;
 	if (!(mutexes_on_forks = create_mutexes_on_forks_array(number_philo)))
@@ -51,11 +52,12 @@ int philo_array_init_mutexes(t_philo **philo_array, int number_philo)
 
 pthread_mutex_t	*create_mutexes_on_forks_array(int number_philo)
 {
-	pthread_mutex_t *mutexes_on_forks;
-	int i;
+	pthread_mutex_t	*mutexes_on_forks;
+	int				i;
 
 	i = 0;
-	if (!(mutexes_on_forks = (pthread_mutex_t*)malloc(sizeof(pthread_mutex_t) * number_philo)))
+	if (!(mutexes_on_forks = (pthread_mutex_t*)malloc(sizeof(pthread_mutex_t) \
+					* number_philo)))
 		return (NULL);
 	while (i < number_philo)
 	{
@@ -77,8 +79,8 @@ pthread_mutex_t	*create_mutexes_on_forks_array(int number_philo)
 **			mutexes_on_forks: an array of mutexes.
 */
 
-void destroy_and_free_mutexes_on_forks(pthread_mutex_t *mutexes_on_forks, \
-		int num)
+void			destroy_and_free_mutexes_on_forks(pthread_mutex_t \
+		*mutexes_on_forks, int num)
 {
 	while (num >= 0)
 	{

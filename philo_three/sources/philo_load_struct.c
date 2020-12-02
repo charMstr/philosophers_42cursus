@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 06:26:45 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 07:35:06 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 08:44:24 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 **			0 KO
 */
 
-int philo_load_struct(t_parser_input *parser, t_philo *philo)
+int	philo_load_struct(t_parser_input *parser, t_philo *philo)
 {
 	philo->total_number = (unsigned int)parser->number_philo;
 	philo->time_to_eat = (unsigned int)(parser->time_to_eat * 1000);
@@ -49,7 +49,7 @@ int philo_load_struct(t_parser_input *parser, t_philo *philo)
 **			0 KO
 */
 
-int philo_init_semaphores(t_philo *philo, int number_philo)
+int	philo_init_semaphores(t_philo *philo, int number_philo)
 {
 	sem_t	*sema_forks;
 	sem_t	*sema_sit_down;

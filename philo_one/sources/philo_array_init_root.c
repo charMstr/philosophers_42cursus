@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:35:52 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 03:36:50 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 08:32:11 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 **			array of pointers,	OK
 */
 
-t_philo **philo_array_init_root(t_parser_input *parser, int number_philo, \
+t_philo	**philo_array_init_root(t_parser_input *parser, int number_philo, \
 		unsigned int *stop)
 {
 	int		i;
@@ -68,8 +68,7 @@ t_philo **philo_array_init_root(t_parser_input *parser, int number_philo, \
 **			pointer to t_philo *
 */
 
-
-t_philo *philo_struct_init(t_parser_input *parser, int id, unsigned int *stop)
+t_philo	*philo_struct_init(t_parser_input *parser, int id, unsigned int *stop)
 {
 	t_philo *philo;
 
@@ -108,7 +107,7 @@ t_philo *philo_struct_init(t_parser_input *parser, int id, unsigned int *stop)
 **			or the second fork depending on 'which').
 */
 
-int	set_fork_index(int id, int total_number, int which)
+int		set_fork_index(int id, int total_number, int which)
 {
 	if (which == 1)
 	{
@@ -145,7 +144,8 @@ int	set_fork_index(int id, int total_number, int which)
 ** RETURN: NULL, always
 */
 
-void *philo_array_destroy(t_philo **array, int size, int mutexes_created_yet)
+void	*philo_array_destroy(t_philo **array, int size, \
+		int mutexes_created_yet)
 {
 	if (size > 0 && mutexes_created_yet)
 		destroy_and_free_mutexes_on_forks(array[0]->mutexes_on_forks, size);
@@ -169,10 +169,10 @@ void *philo_array_destroy(t_philo **array, int size, int mutexes_created_yet)
 **			1, OK
 */
 
-int philo_array_set_time(t_philo **philo_array, int total_philo)
+int		philo_array_set_time(t_philo **philo_array, int total_philo)
 {
-	struct	timeval time_val;
-	int		i;
+	struct timeval	time_val;
+	int				i;
 
 	i = 0;
 	if (gettimeofday(&time_val, NULL))

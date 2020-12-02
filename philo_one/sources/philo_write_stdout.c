@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 21:08:16 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 05:00:16 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 08:35:08 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@
 ** RETURNS:	the length of the string we copied into our buffer
 */
 
-unsigned int philo_strcpy_in_buffer(char *dst, unsigned int start, const char *src)
+unsigned int	philo_strcpy_in_buffer(char *dst, unsigned int start, \
+		const char *src)
 {
 	unsigned int i;
 
@@ -38,7 +39,7 @@ unsigned int philo_strcpy_in_buffer(char *dst, unsigned int start, const char *s
 **			very next character.
 */
 
-int philo_num_to_buff(int num, char buff[], int start)
+int				philo_num_to_buff(int num, char buff[], int start)
 {
 	int i;
 
@@ -63,7 +64,7 @@ int philo_num_to_buff(int num, char buff[], int start)
 **			finally revert the string.
 */
 
-void philo_strrev(int len, char *buff)
+void			philo_strrev(int len, char *buff)
 {
 	int j;
 
@@ -77,7 +78,7 @@ void philo_strrev(int len, char *buff)
 	}
 }
 
-void write_without_lock(t_philo *philo)
+void			write_without_lock(t_philo *philo)
 {
 	unsigned int	len;
 

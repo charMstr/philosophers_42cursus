@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 06:54:19 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 07:27:48 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 08:45:00 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 **			from fork function.
 */
 
-int philo_fork_and_start(int number_philo, t_philo philo)
+int		philo_fork_and_start(int number_philo, t_philo philo)
 {
 	int		i;
 	pid_t	pid;
@@ -62,7 +62,7 @@ void	start_philo(t_philo philo)
 	while (1)
 	{
 		if (!philo.meals_count)
-			break;
+			break ;
 		philo_try_to_grab_forks(&philo);
 		if ((philo.time = get_elapsed_time(&philo)) > philo.time_to_die)
 		{

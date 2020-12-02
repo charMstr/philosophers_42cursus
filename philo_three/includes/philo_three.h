@@ -6,12 +6,12 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:49:51 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 07:35:24 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 08:43:29 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_TWO_H
-# define PHILO_TWO_H
+#ifndef PHILO_THREE_H
+# define PHILO_THREE_H
 
 # include <unistd.h>
 # include <stdlib.h>
@@ -21,19 +21,19 @@
 # include <semaphore.h>
 # include <signal.h>
 
-typedef struct		s_parser_input
+typedef struct	s_parser_input
 {
 	int	number_philo;
 	int	time_to_die;
 	int	time_to_eat;
 	int	time_to_sleep;
 	int	total_meals_each;
-}					t_parser_input;
+}				t_parser_input;
 
-typedef enum		e_state
+typedef enum	e_state
 {
 	FORK, EAT, SLEEP, THINK, DEAD
-}					t_state;
+}				t_state;
 
 /*
 **	total_number: the total number of philosophers.
@@ -53,7 +53,7 @@ typedef enum		e_state
 **	timeval_tmp: the gettimeofday struct. always access timeval_tmp.tv_usec
 */
 
-typedef struct		s_philo
+typedef struct	s_philo
 {
 	char			buffer[32];
 	unsigned int	total_number;
@@ -69,7 +69,7 @@ typedef struct		s_philo
 	sem_t			*sema_sit_down;
 	struct timeval	timeval_last_meal;
 	struct timeval	timeval_tmp;
-}					t_philo;
+}				t_philo;
 
 int				ft_atoi(const char *str);
 size_t			ft_strlen(char *str);

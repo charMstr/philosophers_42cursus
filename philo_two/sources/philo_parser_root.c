@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:00:06 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 00:49:30 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 08:38:15 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 **			0 KO inputs.
 */
 
-int philo_parser_root(t_parser_input *parser, int argc, char *argv[])
+int		philo_parser_root(t_parser_input *parser, int argc, char *argv[])
 {
 	if (!philo_parser_check_input(argc, argv))
 	{
@@ -55,7 +55,7 @@ void	display_usage(char *argv0)
 **			1, OK
 */
 
-int	philo_parser_check_input(int argc, char **argv)
+int		philo_parser_check_input(int argc, char **argv)
 {
 	int i;
 

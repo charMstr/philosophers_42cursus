@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:49:51 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 07:39:33 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 08:37:21 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,19 +21,19 @@
 # include <sys/stat.h>
 # include <semaphore.h>
 
-typedef struct		s_parser_input
+typedef struct	s_parser_input
 {
 	int	number_philo;
 	int	time_to_die;
 	int	time_to_eat;
 	int	time_to_sleep;
 	int	total_meals_each;
-}					t_parser_input;
+}				t_parser_input;
 
-typedef enum		e_state
+typedef enum	e_state
 {
 	FORK, EAT, SLEEP, THINK, DEAD
-}					t_state;
+}				t_state;
 
 /*
 **	total_number: the total number of philosophers.
@@ -56,7 +56,7 @@ typedef enum		e_state
 **	timeval_tmp: the gettimeofday struct. always access timeval_tmp.tv_usec
 */
 
-typedef struct		s_philo
+typedef struct	s_philo
 {
 	char			buffer[32];
 	unsigned int	total_number;
@@ -73,7 +73,7 @@ typedef struct		s_philo
 	sem_t			*sema_sit_down;
 	struct timeval	timeval_last_meal;
 	struct timeval	timeval_tmp;
-}					t_philo;
+}				t_philo;
 
 int				ft_atoi(const char *str);
 size_t			ft_strlen(char *str);
@@ -92,7 +92,8 @@ t_philo			**philo_array_init_root(t_parser_input *parser, \
 		int number_philo, unsigned int *stop);
 t_philo			*philo_struct_init(t_parser_input *parser, int id, \
 		unsigned int *stop);
-int				philo_array_init_semaphore(t_philo **philo_array, int number_philo);
+int				philo_array_init_semaphore(t_philo **philo_array, \
+		int number_philo);
 int				philo_array_set_time(t_philo **philo_array, int total_philo);
 void			*philo_array_destroy(t_philo **array, int size);
 

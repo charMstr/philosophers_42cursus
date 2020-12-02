@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:51:40 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 05:02:12 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 08:50:05 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,19 @@
 # define DEL_MUTEXES 1
 # define NODEL_MUTEXES 0
 
-
-typedef struct		s_parser_input
+typedef struct	s_parser_input
 {
 	int	number_philo;
 	int	time_to_die;
 	int	time_to_eat;
 	int	time_to_sleep;
 	int	total_meals_each;
-}					t_parser_input;
+}				t_parser_input;
 
-typedef enum		e_state
+typedef enum	e_state
 {
 	FORK, EAT, SLEEP, THINK, DEAD
-}					t_state;
+}				t_state;
 
 /*
 **	total_number: the total number of philosophers.
@@ -56,7 +55,7 @@ typedef enum		e_state
 **	timeval_tmp: the gettimeofday struct. always access timeval_tmp.tv_usec
 */
 
-typedef struct		s_philo
+typedef struct	s_philo
 {
 	char			buffer[32];
 	unsigned int	total_number;
@@ -74,7 +73,7 @@ typedef struct		s_philo
 	pthread_mutex_t *mutexes_on_forks;
 	struct timeval	timeval_last_meal;
 	struct timeval	timeval_tmp;
-}					t_philo;
+}				t_philo;
 
 int				ft_atoi(const char *str);
 size_t			ft_strlen(char *str);
@@ -83,29 +82,29 @@ int				ft_isdigit(int c);
 int				str_isdigit(char *str);
 
 int				philo_parser_root(t_parser_input *parser, int argc, \
-		char *argv[]);
+			char *argv[]);
 void			display_usage(char *argv0);
 int				philo_parser_check_input(int argc, char **argv);
 void			philo_parser_get_input(t_parser_input *parser, int argc, \
-		char **argv);
+			char **argv);
 
 t_philo			**philo_array_init_root(t_parser_input *parser, \
-		int philo_number, unsigned int *stop);
+			int philo_number, unsigned int *stop);
 t_philo			*philo_struct_init(t_parser_input *parser, int id, \
-		unsigned int *stop);
+			unsigned int *stop);
 int				set_fork_index(int id, int total_number, int which);
 int				philo_array_set_time(t_philo **philo_array, int total_philo);
 void			*philo_array_destroy(t_philo **array, int size, \
-		int mutexes_created_yet);
+			int mutexes_created_yet);
 
 int				philo_array_init_mutexes(t_philo **philo_array, \
-		int number_philo);
+			int number_philo);
 pthread_mutex_t	*create_mutexes_on_forks_array(int number_philo);
 void			destroy_and_free_mutexes_on_forks(pthread_mutex_t \
-		*mutexes_on_forks, int num);
+			*mutexes_on_forks, int num);
 
 void			start_and_join_threads(unsigned int number_philo, \
-		pthread_t *pthreads_array, t_philo **philo_array);
+			pthread_t *pthreads_array, t_philo **philo_array);
 void			*start_philo(void *philo_void);
 
 unsigned int	get_elapsed_time(t_philo *philo);
@@ -114,7 +113,7 @@ void			philo_try_to_grab_forks(t_philo *philo);
 
 void			write_without_lock(t_philo *philo);
 unsigned int	philo_strcpy_in_buffer(char *dst, unsigned int start, \
-		const char *src);
+			const char *src);
 void			philo_strrev(int len, char *buff);
 int				philo_num_to_buff(int num, char buff[], int start);
 
