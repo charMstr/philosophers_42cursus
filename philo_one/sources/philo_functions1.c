@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 15:16:04 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 03:25:31 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 05:00:39 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,21 +51,30 @@ unsigned int	get_elapsed_time(t_philo *philo)
 void philo_try_to_grab_forks(t_philo *philo)
 {
 	pthread_mutex_lock(&((philo->mutexes_on_forks)[philo->fork1]));
-	write_without_lock(FORK, get_elapsed_time(philo), philo);
+	philo->state = FORK;
+	philo->time = get_elapsed_time(philo);
+	write_without_lock(philo);
 	pthread_mutex_lock(&((philo->mutexes_on_forks)[philo->fork2]));
-	write_without_lock(FORK, get_elapsed_time(philo), philo);
+	philo->state = FORK;
+	philo->time = get_elapsed_time(philo);
+	write_without_lock(philo);
 }
 
-void philo_starts_to_eat(t_philo *philo, unsigned int time)
+void philo_starts_to_eat(t_philo *philo)
 {
-	write_without_lock(EAT, time, philo);
+	philo->state = EAT;
+	write_without_lock(philo);
 	usleep(philo->time_to_eat);
 	pthread_mutex_unlock(&((philo->mutexes_on_forks)[philo->fork1]));
 	pthread_mutex_unlock(&((philo->mutexes_on_forks)[philo->fork2]));
 	philo->timeval_last_meal = philo->timeval_tmp;
 	if (philo->meals_limit)
 		philo->meals_count--;
-	write_without_lock(SLEEP, get_elapsed_time(philo), philo);
+	philo->state = SLEEP;
+	philo->time = get_elapsed_time(philo);
+	write_without_lock(philo);
 	usleep(philo->time_to_sleep);
-	write_without_lock(THINK, get_elapsed_time(philo), philo);
+	philo->state = THINK;
+	philo->time = get_elapsed_time(philo);
+	write_without_lock(philo);
 }

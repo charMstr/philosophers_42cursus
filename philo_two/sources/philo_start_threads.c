@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 14:28:44 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 03:11:58 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 04:11:39 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ void	init_array_writers(t_writer (*array_writers)[], t_philo *philo)
 	i = 0;
 	while (i < 6)
 	{
-		(*array_writers)[i].sema_write = philo->sema_sit_down;
 		(*array_writers)[i].id = philo->id;
 		i++;
 	}

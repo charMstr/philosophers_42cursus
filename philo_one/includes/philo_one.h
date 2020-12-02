@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:51:40 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 03:36:26 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 05:02:12 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ typedef struct		s_philo
 	unsigned int	meals_limit;
 	unsigned int	meals_count;
 	unsigned int	*stop;
+	t_state			state;
+	unsigned int	time;
 	pthread_mutex_t *mutexes_on_forks;
 	struct timeval	timeval_last_meal;
 	struct timeval	timeval_tmp;
@@ -107,10 +109,10 @@ void			start_and_join_threads(unsigned int number_philo, \
 void			*start_philo(void *philo_void);
 
 unsigned int	get_elapsed_time(t_philo *philo);
-void			philo_starts_to_eat(t_philo *philo, unsigned int time);
+void			philo_starts_to_eat(t_philo *philo);
 void			philo_try_to_grab_forks(t_philo *philo);
 
-void			write_without_lock(t_state state, unsigned int time, t_philo *philo);
+void			write_without_lock(t_philo *philo);
 unsigned int	philo_strcpy_in_buffer(char *dst, unsigned int start, \
 		const char *src);
 void			philo_strrev(int len, char *buff);

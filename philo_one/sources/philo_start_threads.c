@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 14:28:44 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 03:25:13 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 05:02:34 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ void start_and_join_threads(unsigned int number_philo, pthread_t *pthreads_array
 void	*start_philo(void *philo_void)
 {
 	t_philo *philo;
-	unsigned int time;
 
 	philo = (t_philo *)philo_void;
 	while (*(philo->stop) == 0)
@@ -68,15 +67,16 @@ void	*start_philo(void *philo_void)
 		if (!philo->meals_count)
 			break;
 		philo_try_to_grab_forks(philo);
-		if ((time = get_elapsed_time(philo)) > philo->time_to_die)
+		if ((philo->time = get_elapsed_time(philo)) > philo->time_to_die)
 		{
 			pthread_mutex_unlock(&((philo->mutexes_on_forks)[philo->fork1]));
 			pthread_mutex_unlock(&((philo->mutexes_on_forks)[philo->fork2]));
-			write_without_lock(DEAD, get_elapsed_time(philo), philo);
+			philo->state = DEAD;
+			write_without_lock(philo);
 			*(philo->stop) = 1;
 			return (NULL);
 		}
-		philo_starts_to_eat(philo, time);
+		philo_starts_to_eat(philo);
 	}
 	return (NULL);
 }
