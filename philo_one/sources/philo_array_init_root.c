@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:35:52 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 23:14:26 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 03:36:50 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 */
 
 t_philo **philo_array_init_root(t_parser_input *parser, int number_philo, \
-		unsigned int *stop, pthread_mutex_t *mutex_on_mic)
+		unsigned int *stop)
 {
 	int		i;
 	t_philo	**philo_array;
@@ -47,7 +47,7 @@ t_philo **philo_array_init_root(t_parser_input *parser, int number_philo, \
 			return (philo_array_destroy(philo_array, i, NODEL_MUTEXES));
 		i++;
 	}
-	if (!(philo_array_init_mutexes(philo_array, number_philo, mutex_on_mic)))
+	if (!(philo_array_init_mutexes(philo_array, number_philo)))
 		return (philo_array_destroy(philo_array, number_philo, NODEL_MUTEXES));
 	if (!philo_array_set_time(philo_array, number_philo))
 		return (philo_array_destroy(philo_array, number_philo, DEL_MUTEXES));
@@ -148,10 +148,7 @@ int	set_fork_index(int id, int total_number, int which)
 void *philo_array_destroy(t_philo **array, int size, int mutexes_created_yet)
 {
 	if (size > 0 && mutexes_created_yet)
-	{
 		destroy_and_free_mutexes_on_forks(array[0]->mutexes_on_forks, size);
-		pthread_mutex_destroy(array[0]->mutex_on_mic);
-	}
 	while (--size >= 0)
 	{
 		free(array[size]);

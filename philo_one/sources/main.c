@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:01:32 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/01 20:31:16 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 03:31:40 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ int	main(int argc, char **argv)
 {
 	t_philo			**philo_array;
 	pthread_t		*pthreads_array;
-	pthread_mutex_t mutex_on_mic;
 	t_parser_input	parser;
 	unsigned int	stop;
 
@@ -26,7 +25,7 @@ int	main(int argc, char **argv)
 	if (!(pthreads_array = malloc(sizeof(pthread_t) * parser.number_philo)))
 		return (1);
 	if (!(philo_array = philo_array_init_root(&parser, parser.number_philo, \
-					&stop, &mutex_on_mic)))
+					&stop)))
 	{
 		free(pthreads_array);
 		return (1);

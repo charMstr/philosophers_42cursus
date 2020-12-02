@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 13:58:35 by charmstr          #+#    #+#             */
-/*   Updated: 2020/11/30 18:49:10 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/02 03:35:31 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,12 @@
 ** note:	this function will make sure we create the appropriate mutexes and
 **			place them in each philosopher structure.
 **			We create a mutex for each fork (all in an array: locks_on_forks).
-**			We also create a mutex for the use of stdout: lock_on_mic.
 **
 ** RETURN:	1 OK
 **			0 KO. some malloc or pthread_mutex_init failed.
 */
 
-int philo_array_init_mutexes(t_philo **philo_array, int number_philo, \
-		pthread_mutex_t *mutex_on_mic)
+int philo_array_init_mutexes(t_philo **philo_array, int number_philo)
 {
 	pthread_mutex_t *mutexes_on_forks;
 	int i;
@@ -31,14 +29,8 @@ int philo_array_init_mutexes(t_philo **philo_array, int number_philo, \
 	i = 0;
 	if (!(mutexes_on_forks = create_mutexes_on_forks_array(number_philo)))
 		return (0);
-	if (pthread_mutex_init(mutex_on_mic, NULL) != 0)
-	{
-		destroy_and_free_mutexes_on_forks(mutexes_on_forks, number_philo);
-		return (0);
-	}
 	while (i < number_philo)
 	{
-		philo_array[i]->mutex_on_mic = mutex_on_mic;
 		philo_array[i]->mutexes_on_forks = mutexes_on_forks;
 		i++;
 	}
