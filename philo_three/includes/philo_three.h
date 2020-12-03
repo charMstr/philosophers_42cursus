@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:49:51 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 08:43:29 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/03 20:53:01 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,14 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <sys/time.h>
+# include <pthread.h>
 # include <fcntl.h>
 # include <sys/stat.h>
 # include <semaphore.h>
 # include <signal.h>
+
+# define PHILO_DEAD 42
+# define PHILO_DONE_EATING 43
 
 typedef struct	s_parser_input
 {
@@ -32,7 +36,7 @@ typedef struct	s_parser_input
 
 typedef enum	e_state
 {
-	FORK, EAT, SLEEP, THINK, DEAD
+	FORK, EAT, SLEEP, THINK, DEAD, DONE
 }				t_state;
 
 /*
@@ -55,7 +59,8 @@ typedef enum	e_state
 
 typedef struct	s_philo
 {
-	char			buffer[32];
+	char			state_buff[32];
+	char			death_buff[32];
 	unsigned int	total_number;
 	unsigned int	id;
 	unsigned int	time_to_eat;
@@ -64,9 +69,11 @@ typedef struct	s_philo
 	unsigned int	meals_limit;
 	unsigned int	meals_count;
 	unsigned int	time;
+	unsigned int	time_poll;
 	t_state			state;
 	sem_t			*sema_forks;
 	sem_t			*sema_sit_down;
+	sem_t			*sema_talk;
 	struct timeval	timeval_last_meal;
 	struct timeval	timeval_tmp;
 }				t_philo;
@@ -86,15 +93,22 @@ void			philo_parser_get_input(t_parser_input *parser, int argc, \
 
 int				philo_load_struct(t_parser_input *parser, t_philo *philo);
 int				philo_init_semaphores(t_philo *philo, int number_philo);
+void			philo_destroy_all_semaphores(t_philo *philo);
+int				philo_destroy_sem(sem_t *destroy_me);
 
-void			start_philo(t_philo philo);
-int				philo_fork_and_start(int number_philo, t_philo philo);
+int				philo_fork_and_start_processes(int number_philo, \
+		t_philo philo);
+void			philo_start_process(t_philo philo);
+void			*start_philo(void *philo_void);
+void			*polling_philo(void *philo_void);
+void			philo_wait_for_pids(int number_philo);
 
 unsigned int	get_elapsed_time(t_philo *philo);
-void			philo_starts_to_eat(t_philo *philo);
-void			philo_try_to_grab_forks(t_philo *philo);
+void			philo_try_to_sleep_and_think(t_philo *philo);
+void			philo_try_to_grab_forks_and_eat(t_philo *philo);
 
-void			write_without_lock(t_philo *philo);
+void			write_stop_philo(t_philo *philo, int full_or_dead);
+void			write_philo_state(t_philo *philo);
 unsigned int	philo_strcpy_in_buffer(char *dst, unsigned int start, \
 		const char *src);
 void			philo_strrev(int len, char *buff);

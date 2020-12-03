@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 21:08:16 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 08:45:44 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/03 21:10:56 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,24 +80,65 @@ void			philo_strrev(int len, char *buff)
 /*
 ** note:	no need for a write, we use an atomic write with a memory aligned
 **			on 32 bits!
+**
+** RETURN:	1 it was ok to write, no philo is dead.
+**			0 a philo was dead, no more writes to stdout.
 */
 
-void			write_without_lock(t_philo *philo)
+void			write_philo_state(t_philo *philo)
 {
 	unsigned int	len;
 
-	len = philo_num_to_buff(philo->id, philo->buffer, 0);
-	len = philo_num_to_buff(philo->time, philo->buffer, len);
-	philo_strrev(len, philo->buffer);
+	len = philo_num_to_buff(philo->id, philo->state_buff, 0);
+	len = philo_num_to_buff(philo->time, philo->state_buff, len);
+	philo_strrev(len, philo->state_buff);
 	if (philo->state == FORK)
-		len += philo_strcpy_in_buffer(philo->buffer, len, "has taken a fork\n");
+		len += philo_strcpy_in_buffer(philo->state_buff, len,
+				"has taken a fork\n");
 	else if (philo->state == EAT)
-		len += philo_strcpy_in_buffer(philo->buffer, len, "is eating\n");
+		len += philo_strcpy_in_buffer(philo->state_buff, len, "is eating\n");
 	else if (philo->state == SLEEP)
-		len += philo_strcpy_in_buffer(philo->buffer, len, "is sleeping\n");
+		len += philo_strcpy_in_buffer(philo->state_buff, len, "is sleeping\n");
 	else if (philo->state == THINK)
-		len += philo_strcpy_in_buffer(philo->buffer, len, "is thinking\n");
+		len += philo_strcpy_in_buffer(philo->state_buff, len, "is thinking\n");
 	else
-		len += philo_strcpy_in_buffer(philo->buffer, len, "died\n");
-	write(1, philo->buffer, len);
+		len += philo_strcpy_in_buffer(philo->state_buff, len, "thank you.\n");
+	sem_wait(philo->sema_talk);
+	write(1, philo->state_buff, len);
+	sem_post(philo->sema_talk);
+}
+
+/*
+** note:	this function is designed to write that a philosopher is dead.
+**
+** note:	inside the functino if a philosoper had already died, we dont use
+**			stdout. otherwise we set the global variable to 0.
+**
+** note:	the semaphore for talking is held but never released, therefor no
+**			other thread can use it (and it is common to all processes).
+*/
+
+void			write_stop_philo(t_philo *philo, int full_or_dead)
+{
+	unsigned int	len;
+
+	if (full_or_dead == PHILO_DONE_EATING)
+	{
+		len = philo_num_to_buff(philo->id, philo->state_buff, 0);
+		philo->state_buff[len++] = ' ';
+		philo->state_buff[len++] = '[';
+		philo_strrev(len, philo->state_buff);
+		len += philo_strcpy_in_buffer(philo->state_buff, len, \
+				"says no more 🍔!! ]\n");
+		sem_wait(philo->sema_talk);
+		write(1, philo->state_buff, len);
+		sem_post(philo->sema_talk);
+		return ;
+	}
+	len = philo_num_to_buff(philo->id, philo->death_buff, 0);
+	len = philo_num_to_buff(philo->time_poll, philo->death_buff, len);
+	philo_strrev(len, philo->death_buff);
+	len += philo_strcpy_in_buffer(philo->death_buff, len, "died\n");
+	sem_wait(philo->sema_talk);
+	write(1, philo->death_buff, len);
 }
