@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 15:16:04 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 08:41:24 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/03 17:30:21 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,45 +37,40 @@ unsigned int	get_elapsed_time(t_philo *philo)
 }
 
 /*
-** note:	This function will try to see if the philosopher can eat: if it
-**			cannot, it returns 0 and the stop's value common to all threads
-**			will be set to 1.
+** note:	this function will try to see if a philosopher can be seated and
+**			eat. If it can be seated, the philosopher grabs two forks and eats,
+**			it then realeases its fors and releases its seat on the table.
 **
-** note:	One out of two philosophers is made left handed, the other one
-**			right handed.
-**
-** RETURN:	0 KO
-**			1 OK
+** note:	if another philosopher died somewhere else, no writes occur within
+**			the write_philo_state func.
 */
 
-void			philo_try_to_grab_forks(t_philo *philo)
+void			philo_try_to_grab_forks_and_eat(t_philo *philo)
 {
 	sem_wait(philo->sema_sit_down);
 	sem_wait(philo->sema_forks);
 	philo->time = get_elapsed_time(philo);
 	philo->state = FORK;
-	write_without_lock(philo);
+	write_philo_state(philo);
 	sem_wait(philo->sema_forks);
 	philo->time = get_elapsed_time(philo);
-	write_without_lock(philo);
-}
-
-void			philo_starts_to_eat(t_philo *philo)
-{
+	write_philo_state(philo);
+	philo->timeval_last_meal = philo->timeval_tmp;
 	philo->state = EAT;
-	write_without_lock(philo);
-	usleep(philo->time_to_eat);
-	sem_post(philo->sema_forks);
+	write_philo_state(philo);
 	sem_post(philo->sema_sit_down);
 	sem_post(philo->sema_forks);
-	philo->timeval_last_meal = philo->timeval_tmp;
-	if (philo->meals_limit)
-		philo->meals_count--;
+	sem_post(philo->sema_forks);
+	usleep(philo->time_to_eat);
+}
+
+void			philo_try_to_sleep_and_think(t_philo *philo)
+{
 	philo->time = get_elapsed_time(philo);
 	philo->state = SLEEP;
-	write_without_lock(philo);
+	write_philo_state(philo);
 	usleep(philo->time_to_sleep);
 	philo->time = get_elapsed_time(philo);
 	philo->state = THINK;
-	write_without_lock(philo);
+	write_philo_state(philo);
 }
