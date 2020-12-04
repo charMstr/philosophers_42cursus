@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:35:52 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 08:32:11 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/04 05:04:58 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,31 +26,59 @@
 **
 ** INPUTS:	parser: the structure containing the valid user inputs
 **			number_philo: the total number of philo struct we will create
-**			stop: a pointer to a stack variable from the main func. a boolean.
+**			total_number: a pointer to a stack variable from the main func.
+**				it will help us decide when all philosophers are done eating
+**				or when a philosopher is dead.
 **
 ** RETURN:	NULL,				KO, malloc or gettimeofday or mutex_init failed
 **			array of pointers,	OK
 */
 
 t_philo	**philo_array_init_root(t_parser_input *parser, int number_philo, \
-		unsigned int *stop)
+		unsigned int *total_number, pthread_mutex_t *speaker)
 {
-	int		i;
-	t_philo	**philo_array;
+	int				i;
+	t_philo			**philo_array;
 
 	i = 0;
-	if (!(philo_array = malloc(sizeof(t_philo*) * number_philo)))
+	if (!(philo_array = philo_array_init(parser, total_number)))
 		return (NULL);
-	while (i < number_philo)
+	if (!(philo_array_init_mutexes(philo_array, number_philo, speaker)))
 	{
-		if (!(philo_array[i] = philo_struct_init(parser, i + 1, stop)))
-			return (philo_array_destroy(philo_array, i, NODEL_MUTEXES));
+		return (philo_array_destroy(philo_array, parser->number_philo, \
+			NODEL_MUTEX));
+	}
+	if (!philo_array_set_time(philo_array, parser->number_philo))
+	{
+		return (philo_array_destroy(philo_array, parser->number_philo, \
+			DEL_MUTEX));
+	}
+	return (philo_array);
+}
+
+/*
+** note:	this function will init the array of philo structures, and the
+**			unsigned int* that store a common value for the total number of
+**			philosophers as well.
+**
+** RETURN:	pointer to an array of t_philo* structures.
+**			NULL KO
+*/
+
+t_philo	**philo_array_init(t_parser_input *parser, unsigned int *total_number)
+{
+	t_philo	**philo_array;
+	int		i;
+
+	i = 0;
+	if (!(philo_array = malloc(sizeof(t_philo*) * parser->number_philo)))
+		return (NULL);
+	while (i < parser->number_philo)
+	{
+		if (!(philo_array[i] = philo_struct_init(parser, i + 1, total_number)))
+			return (philo_array_destroy(philo_array, i, NODEL_MUTEX));
 		i++;
 	}
-	if (!(philo_array_init_mutexes(philo_array, number_philo)))
-		return (philo_array_destroy(philo_array, number_philo, NODEL_MUTEXES));
-	if (!philo_array_set_time(philo_array, number_philo))
-		return (philo_array_destroy(philo_array, number_philo, DEL_MUTEXES));
 	return (philo_array);
 }
 
@@ -68,18 +96,15 @@ t_philo	**philo_array_init_root(t_parser_input *parser, int number_philo, \
 **			pointer to t_philo *
 */
 
-t_philo	*philo_struct_init(t_parser_input *parser, int id, unsigned int *stop)
+t_philo	*philo_struct_init(t_parser_input *parser, int id, unsigned int *total)
 {
 	t_philo *philo;
 
 	if (!(philo = malloc(sizeof(t_philo))))
 		return (NULL);
-	philo->mutexes_on_forks = NULL;
-	philo->total_number = (unsigned int)parser->number_philo;
+	philo->total_number = total;
+	*(philo->total_number) = (unsigned int)parser->number_philo;
 	philo->id = (unsigned int)id;
-	philo->fork1 = (unsigned int)set_fork_index(id, parser->number_philo, 1);
-	philo->fork2 = (unsigned int)set_fork_index(id, parser->number_philo, 2);
-	philo->stop = stop;
 	philo->time_to_eat = (unsigned int)(parser->time_to_eat * 1000);
 	philo->time_to_sleep = (unsigned int)(parser->time_to_sleep * 1000);
 	philo->time_to_die = (unsigned int)parser->time_to_die;
@@ -97,58 +122,19 @@ t_philo	*philo_struct_init(t_parser_input *parser, int id, unsigned int *stop)
 }
 
 /*
-** note:	this function will help in setting the index of the first and
-**			second fork a philosopher will grab.
-**
-** note:	the last param, tell us either if we are setting the first (==1) or
-**			the second (==2) fork's index.
-**
-** RETURN:	the index of the fork a philosopher should grab (its the first fork
-**			or the second fork depending on 'which').
-*/
-
-int		set_fork_index(int id, int total_number, int which)
-{
-	if (which == 1)
-	{
-		if (id % 2)
-			return (id - 1);
-		else
-		{
-			if (id == total_number)
-				return (0);
-			return (id);
-		}
-	}
-	else
-	{
-		if (id % 2)
-			return (id);
-		else
-			return (id - 1);
-	}
-}
-
-/*
 ** note:	this function will be used to destroy an array of t_philo struct
 **			pointers.
-**
-** note:	this function can be called at different stages while creating the
-**			array, setting up the mutexes, and setting up the start time.
-**			Therefore the mutexes might not be created/initialized yet.
-**
-** note:	if mutexes were created: inside the very first t_philo struct
-**			pointer, we free the common	data only once: the array of
-**			initialized mutexes for forks, and the mic mutex.
 **
 ** RETURN: NULL, always
 */
 
-void	*philo_array_destroy(t_philo **array, int size, \
-		int mutexes_created_yet)
+void	*philo_array_destroy(t_philo **array, int size, int del_mutexes)
 {
-	if (size > 0 && mutexes_created_yet)
-		destroy_and_free_mutexes_on_forks(array[0]->mutexes_on_forks, size);
+	if (size > 0 && del_mutexes)
+	{
+		destroy_mutexes_on_forks((array[0])->mutexes_on_forks, size - 1);
+		pthread_mutex_destroy((array[0])->speaker);
+	}
 	while (--size >= 0)
 	{
 		free(array[size]);

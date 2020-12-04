@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 15:16:04 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 08:32:39 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/04 04:58:44 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,33 +48,36 @@ unsigned int	get_elapsed_time(t_philo *philo)
 **			1 OK
 */
 
-void			philo_try_to_grab_forks(t_philo *philo)
+void			philo_try_to_grab_forks_and_eat(t_philo *philo)
 {
-	pthread_mutex_lock(&((philo->mutexes_on_forks)[philo->fork1]));
+	pthread_mutex_lock(philo->fork1);
+	philo->state = FORK;
+	pthread_mutex_lock(philo->fork2);
 	philo->state = FORK;
 	philo->time = get_elapsed_time(philo);
-	write_without_lock(philo);
-	pthread_mutex_lock(&((philo->mutexes_on_forks)[philo->fork2]));
-	philo->state = FORK;
+	write_with_lock(philo);
+	write_with_lock(philo);
 	philo->time = get_elapsed_time(philo);
-	write_without_lock(philo);
+	philo->timeval_last_meal = philo->timeval_tmp;
+	philo->state = EAT;
+	write_with_lock(philo);
+	usleep(philo->time_to_eat);
+	pthread_mutex_unlock(philo->fork1);
+	pthread_mutex_unlock(philo->fork2);
 }
 
-void			philo_starts_to_eat(t_philo *philo)
+/*
+** note:	the separation is made so that we can interrupt the printing on
+**			stdout in case we are done with our meals.
+*/
+
+void			philo_try_to_sleep_and_think(t_philo *philo)
 {
-	philo->state = EAT;
-	write_without_lock(philo);
-	usleep(philo->time_to_eat);
-	pthread_mutex_unlock(&((philo->mutexes_on_forks)[philo->fork1]));
-	pthread_mutex_unlock(&((philo->mutexes_on_forks)[philo->fork2]));
-	philo->timeval_last_meal = philo->timeval_tmp;
-	if (philo->meals_limit)
-		philo->meals_count--;
 	philo->state = SLEEP;
 	philo->time = get_elapsed_time(philo);
-	write_without_lock(philo);
+	write_with_lock(philo);
 	usleep(philo->time_to_sleep);
 	philo->state = THINK;
 	philo->time = get_elapsed_time(philo);
-	write_without_lock(philo);
+	write_with_lock(philo);
 }

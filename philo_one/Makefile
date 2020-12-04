@@ -6,7 +6,7 @@
 #    By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/01/27 17:46:05 by charmstr          #+#    #+#              #
-#    Updated: 2020/12/02 06:51:16 by charmstr         ###   ########.fr        #
+#    Updated: 2020/12/03 22:51:51 by charmstr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -82,6 +82,7 @@ SRC_FILES =	main\
 			philo_start_threads\
 			philo_gettime_and_eat\
 			philo_write_stdout\
+			philo_write_stdout_assist\
 			libft_funcs1
 	
 

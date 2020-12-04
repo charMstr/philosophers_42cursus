@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:49:51 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/03 21:33:09 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/03 22:35:48 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,15 @@ typedef struct	s_parser_input
 
 typedef enum	e_state
 {
-	FORK, EAT, SLEEP, THINK, DEAD, DONE
+	FORK, EAT, SLEEP, THINK, DEAD
 }				t_state;
 
 /*
+**	state_buff: buffer we use in our start_philo threads to describe.
+**	death_buff:	buffer used in the polling philo, so that it is not modified
+**	time: the time used in the start_philo thread.
+**	time_poll: the time used in polling phio_thread.
+**
 **	total_number: the total number of philosophers.
 **	id:	philosopher_id
 **	itoa_id: string that stores an itoa version of the philo's ID.
@@ -48,9 +53,10 @@ typedef enum	e_state
 **
 **	stop: the adress of a boolean in Main stack if set to one, all philo will
 **		stop.
-** sem_forks: semaphore on the number of forks
-** sem_sit_down: there is total_numbers_of_philo - 1 seats so that we avoid
-**		dead locks.
+**	sema_forks: semaphore on the number of forks
+**	sema_sit_down: number of philosophers divided by two, is the number of
+**		philosophers that can grab two forks and eat.
+**	sema_talk: token to use stdout
 **
 **	timeval_last_meal: contains the timestamp of last meal
 **	timeval_tmp: the gettimeofday struct. always access timeval_tmp.tv_usec

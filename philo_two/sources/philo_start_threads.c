@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 14:28:44 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/03 21:39:41 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/04 01:18:22 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,7 @@ void	start_and_join_threads(unsigned int number_philo, \
 	while (index_pthreads < number_philo * 2)
 	{
 		pthread_join(pthreads_array[index_pthreads], NULL);
-		pthread_join(pthreads_array[index_pthreads + 1], NULL);
-		index_pthreads += 2;
+		index_pthreads ++;
 	}
 }
 

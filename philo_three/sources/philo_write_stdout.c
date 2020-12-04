@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 21:08:16 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/03 21:10:56 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/03 21:17:36 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,10 +99,8 @@ void			write_philo_state(t_philo *philo)
 		len += philo_strcpy_in_buffer(philo->state_buff, len, "is eating\n");
 	else if (philo->state == SLEEP)
 		len += philo_strcpy_in_buffer(philo->state_buff, len, "is sleeping\n");
-	else if (philo->state == THINK)
-		len += philo_strcpy_in_buffer(philo->state_buff, len, "is thinking\n");
 	else
-		len += philo_strcpy_in_buffer(philo->state_buff, len, "thank you.\n");
+		len += philo_strcpy_in_buffer(philo->state_buff, len, "is thinking\n");
 	sem_wait(philo->sema_talk);
 	write(1, philo->state_buff, len);
 	sem_post(philo->sema_talk);

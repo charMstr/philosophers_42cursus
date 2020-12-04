@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:49:51 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/03 20:53:01 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/03 22:36:42 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ typedef struct	s_parser_input
 
 typedef enum	e_state
 {
-	FORK, EAT, SLEEP, THINK, DEAD, DONE
+	FORK, EAT, SLEEP, THINK, DEAD
 }				t_state;
 
 /*
