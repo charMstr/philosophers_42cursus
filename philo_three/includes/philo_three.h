@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:49:51 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/03 22:36:42 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/04 05:34:59 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 # include <pthread.h>
 # include <fcntl.h>
 # include <sys/stat.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 # include <semaphore.h>
 # include <signal.h>
 
