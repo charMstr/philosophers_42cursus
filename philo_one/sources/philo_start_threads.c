@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 14:28:44 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/04 05:15:37 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/04 13:42:24 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,30 +27,31 @@
 */
 
 void	start_and_join_threads(unsigned int number_philo, \
-		pthread_t *pthreads_array, t_philo **philo_array)
+		pthread_t *pth_array, t_philo **phi_array)
 {
-	unsigned int	i;
-	pthread_t		thread;
+	int	i;
+	int	j;
 
-	i = 1;
-	while (i < number_philo)
+	i = 0;
+	j = 1;
+	while (i < (int)number_philo)
 	{
-		pthread_create(&thread, NULL, start_philo, (void*)philo_array[i]);
-		pthread_create(&pthreads_array[i], NULL, polling_philo, \
-				(void*)philo_array[i]);
+		pthread_create(&pth_array[i], NULL, start_philo, (void*)phi_array[i]);
+		pthread_create(&pth_array[i + 1], NULL, polling_philo, \
+				(void*)phi_array[i]);
 		i += 2;
 	}
-	i = 0;
-	while (i < number_philo)
+	while (i < (int)number_philo * 2)
 	{
-		pthread_create(&thread, NULL, start_philo, (void*)philo_array[i]);
-		pthread_create(&pthreads_array[i], NULL, polling_philo, \
-				(void*)philo_array[i]);
+		pthread_create(&pth_array[i], NULL, start_philo, (void*)phi_array[j]);
+		pthread_create(&pth_array[i + 1], NULL, polling_philo, \
+				(void*)phi_array[j]);
 		i += 2;
+		j += 2;
 	}
 	i = -1;
-	while (++i < number_philo)
-		pthread_join(pthreads_array[i], NULL);
+	while (++i < (int)number_philo * 2)
+		pthread_join(pth_array[i], NULL);
 }
 
 /*

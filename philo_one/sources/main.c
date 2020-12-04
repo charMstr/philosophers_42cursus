@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:01:32 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/04 04:52:01 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/04 13:43:43 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	main(int argc, char **argv)
 
 	if (!philo_parser_root(&parser, argc, argv))
 		return (EXIT_FAILURE);
-	if (!(pthread_array = malloc(sizeof(pthread_t) * parser.number_philo)))
+	if (!(pthread_array = malloc(sizeof(pthread_t) * parser.number_philo * 2)))
 		return (EXIT_FAILURE);
 	if (!(philo_array = philo_array_init_root(&parser, parser.number_philo, \
 					&total_number, &speaker)))
