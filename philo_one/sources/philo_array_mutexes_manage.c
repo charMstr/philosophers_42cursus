@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 13:58:35 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/04 05:13:25 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/04 14:54:05 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,9 +143,13 @@ int				set_fork_index(int id, int total_number, int which)
 	}
 	else
 	{
-		if (id % 2)
-			return (id);
-		else
+		if (id % 2 == 0)
 			return (id - 1);
+		else
+		{
+			if (id == total_number)
+				return (0);
+			return (id);
+		}
 	}
 }
