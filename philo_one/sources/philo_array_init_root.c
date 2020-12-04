@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:35:52 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/04 05:04:58 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/04 05:25:25 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,8 @@
 t_philo	**philo_array_init_root(t_parser_input *parser, int number_philo, \
 		unsigned int *total_number, pthread_mutex_t *speaker)
 {
-	int				i;
 	t_philo			**philo_array;
 
-	i = 0;
 	if (!(philo_array = philo_array_init(parser, total_number)))
 		return (NULL);
 	if (!(philo_array_init_mutexes(philo_array, number_philo, speaker)))
