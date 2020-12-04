@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 21:08:16 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/03 21:17:36 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/04 15:29:05 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,10 @@ void			write_philo_state(t_philo *philo)
 **
 ** note:	the semaphore for talking is held but never released, therefor no
 **			other thread can use it (and it is common to all processes).
+**
+** note:	the extra \n when the last philo dies comes from the kill command.
+**			we use SIGINT, so its silent, but if we use SIGKILL the "empty
+**			added line" would be used to display the "zsh: killed ..." message.
 */
 
 void			write_stop_philo(t_philo *philo, int full_or_dead)
