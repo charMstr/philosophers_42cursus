@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 21:08:16 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/04 05:13:44 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/07 01:29:47 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,24 @@
 **			subsequent output.
 */
 
-void			write_with_lock(t_philo *philo)
+void			write_with_lock(t_philo *philo, t_state state)
 {
 	unsigned int	len;
 
 	len = philo_num_to_buff(philo->id, philo->state_buff, 0);
-	len = philo_num_to_buff(philo->time, philo->state_buff, len);
+	len = philo_num_to_buff(philo->elapsed_time, philo->state_buff, len);
 	philo_strrev(len, philo->state_buff);
-	if (philo->state == FORK)
+	if (state == FORK)
 		len += philo_strcpy_in_buffer(philo->state_buff, len, \
 				"has taken a fork\n");
-	else if (philo->state == EAT)
+	else if (state == EAT)
 		len += philo_strcpy_in_buffer(philo->state_buff, len, "is eating\n");
-	else if (philo->state == SLEEP)
+	else if (state == SLEEP)
 		len += philo_strcpy_in_buffer(philo->state_buff, len, "is sleeping\n");
 	else
 		len += philo_strcpy_in_buffer(philo->state_buff, len, "is thinking\n");
 	pthread_mutex_lock(philo->speaker);
-	if (*(philo->total_number) == 0)
+	if (*(philo->nb_philo_alive) == 0)
 	{
 		pthread_mutex_unlock(philo->speaker);
 		return ;
@@ -60,16 +60,16 @@ void			write_dead_philo(t_philo *philo)
 	unsigned int	len;
 
 	len = philo_num_to_buff(philo->id, philo->death_buff, 0);
-	len = philo_num_to_buff(philo->time_poll, philo->death_buff, len);
+	len = philo_num_to_buff(philo->death_time, philo->death_buff, len);
 	philo_strrev(len, philo->death_buff);
 	len += philo_strcpy_in_buffer(philo->death_buff, len, "died\n");
 	pthread_mutex_lock(philo->speaker);
-	if (!*(philo->total_number))
+	if (!*(philo->nb_philo_alive))
 	{
 		pthread_mutex_unlock(philo->speaker);
 		return ;
 	}
-	*(philo->total_number) = 0;
+	*(philo->nb_philo_alive) = 0;
 	write(1, philo->death_buff, len);
 	pthread_mutex_unlock(philo->speaker);
 }
@@ -98,12 +98,12 @@ void			write_fed_up_philo(t_philo *philo)
 	len += philo_strcpy_in_buffer(philo->death_buff, len, \
 			"says no more 🍔!! ]\n");
 	pthread_mutex_lock(philo->speaker);
-	if (!*(philo->total_number))
+	if (!*(philo->nb_philo_alive))
 	{
 		pthread_mutex_unlock(philo->speaker);
 		return ;
 	}
-	(*(philo->total_number))--;
+	(*(philo->nb_philo_alive))--;
 	write(1, philo->death_buff, len);
 	pthread_mutex_unlock(philo->speaker);
 }

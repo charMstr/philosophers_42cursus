@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:51:40 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/04 04:58:37 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/07 01:40:06 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@
 # include <sys/time.h>
 # include <pthread.h>
 
-# define DEL_MUTEX 1
-# define NODEL_MUTEX 0
+# define FIRST_FORK 1
+# define SECOND_FORK 2
 
 typedef struct	s_parser_input
 {
@@ -32,7 +32,7 @@ typedef struct	s_parser_input
 
 typedef enum	e_state
 {
-	FORK, EAT, SLEEP, THINK, DEAD
+	FORK, EAT, SLEEP, THINK
 }				t_state;
 
 /*
@@ -67,23 +67,25 @@ typedef struct	s_philo
 {
 	char			state_buff[32];
 	char			death_buff[32];
-	unsigned int	time;
-	unsigned int	time_poll;
+	unsigned int	elapsed_time;
+	unsigned int	death_time;
 	unsigned int	id;
 	unsigned int	time_to_eat;
 	unsigned int	time_to_sleep;
 	unsigned int	time_to_die;
 	unsigned int	meals_limit;
 	unsigned int	meals_count;
-	unsigned int	*total_number;
-	t_state			state;
+	unsigned int	*nb_philo_alive;
 	pthread_mutex_t *fork1;
 	pthread_mutex_t *fork2;
 	pthread_mutex_t *speaker;
-	pthread_mutex_t *mutexes_on_forks;
+	pthread_mutex_t *touch_last_meal;
 	struct timeval	timeval_last_meal;
 	struct timeval	timeval_tmp;
 }				t_philo;
+
+int				set_mem_protections_and_thread(t_philo **philo_array, \
+			int number_philo, pthread_t *pthread_array);
 
 int				ft_atoi(const char *str);
 size_t			ft_strlen(char *str);
@@ -98,37 +100,42 @@ int				philo_parser_check_input(int argc, char **argv);
 void			philo_parser_get_input(t_parser_input *parser, int argc, \
 			char **argv);
 
-t_philo			**philo_array_init_root(t_parser_input *parser, \
-			int number_philo, unsigned int *total_number, \
-			pthread_mutex_t *speaker);
-t_philo			**philo_array_init(t_parser_input *parser, \
-			unsigned int *total_number);
+t_philo			**philo_array_init(t_parser_input *parser, int number_philo);
 t_philo			*philo_struct_init(t_parser_input *parser, int id, \
-			unsigned int *total);
-void			*philo_array_destroy(t_philo **array, int size, \
-			int del_mutexes);
-int				philo_array_set_time(t_philo **philo_array, int total_philo);
+			unsigned int *nb_philo_alive);
+void			*philo_array_destroy(t_philo **philo_array, int size);
+int				philo_set_start_time(t_philo **philo_array, int number_philo);
 
-pthread_mutex_t *philo_init_mutexes_on_forks(int number_philo);
-void			philo_array_place_mutex(t_philo **philo_array, \
-			int number_philo, pthread_mutex_t *mutexes_on_forks, \
-			pthread_mutex_t *speaker);
-int				philo_array_init_mutexes(t_philo **philo_array, \
-			int number_philo, pthread_mutex_t *speaker);
+int				philo_mutexes_set(t_philo **philo_array, int number_philo, \
+			pthread_mutex_t **mutexes_on_forks);
+pthread_mutex_t	*philo_init_mutexes_on_forks(int number_philo);
+void			philo_set_fork1_and_fork2(int number_philo, \
+			t_philo **philo_array, pthread_mutex_t *mutexes_on_forks);
+int				set_fork_index(int id, int total_number, int which);
 void			destroy_mutexes_on_forks(pthread_mutex_t *mutexes_on_forks, \
 			int num);
-int				set_fork_index(int id, int total_number, int which);
 
-void			start_and_join_threads(unsigned int number_philo, \
-		pthread_t *pthreads_array, t_philo **philo_array);
-void			*start_philo(void *philo_void);
-void			*polling_philo(void *philo_void);
+int				philo_init_mutex_speaker(int number_philo, \
+			t_philo **philo_array);
+int				philo_init_mutex_touch_last_meal(int number_philo, \
+			t_philo **philo_array);
+void			destroy_mutexes_touch_last_meal(t_philo **philo_array, \
+			int index);
+void			mutex_destroy_all(t_philo **philo_array, int number_philo, \
+			pthread_mutex_t *mutexes_on_forks);
 
-unsigned int	get_elapsed_time(t_philo *philo);
+int				start_threads(t_philo **phi_array, int number_philo, \
+			pthread_t *pth_array);
+void			*life(void *philo_void);
+void			*monitor(void *philo_void);
+
+void			set_elapsed_time(t_philo *philo);
+void			philo_update_last_meal_time(t_philo *philo);
+int				philo_check_last_meal_time(t_philo *philo);
 void			philo_try_to_grab_forks_and_eat(t_philo *philo);
 void			philo_try_to_sleep_and_think(t_philo *philo);
 
-void			write_with_lock(t_philo *philo);
+void			write_with_lock(t_philo *philo, t_state state);
 void			write_dead_philo(t_philo *philo);
 void			write_fed_up_philo(t_philo *philo);
 
