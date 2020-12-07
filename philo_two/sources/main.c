@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:01:32 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/03 21:39:04 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/07 04:24:17 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,26 +39,56 @@
 **			threads left behind.
 */
 
-int	main(int argc, char **argv)
+int		main(int argc, char **argv)
 {
 	t_philo			**philo_array;
-	pthread_t		*pthreads_array;
+	pthread_t		*pthread_array;
 	t_parser_input	parser;
-	unsigned int	stop;
 
-	stop = 0;
 	if (!philo_parser_root(&parser, argc, argv))
 		return (EXIT_FAILURE);
-	if (!(pthreads_array = malloc(sizeof(pthread_t) * parser.number_philo * 2)))
+	if (!(pthread_array = malloc(sizeof(pthread_t) * parser.number_philo * 2)))
 		return (EXIT_FAILURE);
-	if (!(philo_array = philo_array_init_root(&parser, parser.number_philo, \
-					&stop)))
+	if (!(philo_array = philo_array_init(&parser, parser.number_philo)))
 	{
-		free(pthreads_array);
+		free(pthread_array);
 		return (EXIT_FAILURE);
 	}
-	start_and_join_threads(parser.number_philo, pthreads_array, philo_array);
+	if (!(set_mem_protections_and_thread(philo_array, parser.number_philo, \
+			pthread_array)))
+	{
+		philo_array_destroy(philo_array, parser.number_philo);
+		free(pthread_array);
+		return (EXIT_FAILURE);
+	}
 	philo_array_destroy(philo_array, parser.number_philo);
-	free(pthreads_array);
+	free(pthread_array);
 	return (EXIT_SUCCESS);
+}
+
+/*
+** note:	This function will take care of seting the memory protections for
+**			accessing same memory in different threads. Then it will set in all
+**			the philosphers the same start time. Then it will start our threads
+**
+** RETURN:	0, KO, some malloc or gettimeofday or pthread_create func failed.
+**			1 O
+*/
+
+int		set_mem_protections_and_thread(t_philo **philo_array, \
+		int number_philo, pthread_t *pthread_array)
+{
+	int				i;
+
+	i = 0;
+	if (!philo_init_semaphores(philo_array, number_philo))
+		return (0);
+	if (!philo_set_start_time(philo_array, number_philo))
+	{
+		semaphores_close_all(philo_array, number_philo);
+		return (0);
+	}
+	start_and_join_threads(philo_array, number_philo, pthread_array);
+	semaphores_close_all(philo_array, number_philo);
+	return (1);
 }

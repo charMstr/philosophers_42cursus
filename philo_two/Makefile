@@ -6,7 +6,7 @@
 #    By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/01/27 17:46:05 by charmstr          #+#    #+#              #
-#    Updated: 2020/12/03 21:31:52 by charmstr         ###   ########.fr        #
+#    Updated: 2020/12/07 03:31:28 by charmstr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -79,6 +79,7 @@ SRC_FILES =	main\
 			philo_parser_root\
 			philo_array_init_root\
 			philo_manage_semaphores\
+			philo_manage_semaphores2\
 			philo_start_threads\
 			philo_gettime_and_eat\
 			philo_write_stdout\

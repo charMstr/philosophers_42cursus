@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:49:51 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/03 22:35:48 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/07 04:55:36 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ typedef struct	s_parser_input
 
 typedef enum	e_state
 {
-	FORK, EAT, SLEEP, THINK, DEAD
+	FORK, EAT, SLEEP, THINK
 }				t_state;
 
 /*
@@ -66,9 +66,8 @@ typedef struct	s_philo
 {
 	char			state_buff[32];
 	char			death_buff[32];
-	unsigned int	time;
-	unsigned int	time_poll;
-	unsigned int	total_number;
+	unsigned int	elapsed_time;
+	unsigned int	death_time;
 	unsigned int	id;
 	unsigned int	time_to_eat;
 	unsigned int	time_to_sleep;
@@ -76,13 +75,16 @@ typedef struct	s_philo
 	unsigned int	meals_limit;
 	unsigned int	meals_count;
 	unsigned int	*stop;
-	t_state			state;
 	sem_t			*sema_forks;
-	sem_t			*sema_sit_down;
-	sem_t			*sema_talk;
+	sem_t			*sema_sit;
+	sem_t			*sema_speaker;
+	sem_t			*sema_touch_last_meal;
 	struct timeval	timeval_last_meal;
 	struct timeval	timeval_tmp;
 }				t_philo;
+
+int				set_mem_protections_and_thread(t_philo **philo_array, \
+		int number_philo, pthread_t *pthread_array);
 
 int				ft_atoi(const char *str);
 size_t			ft_strlen(char *str);
@@ -97,28 +99,35 @@ int				philo_parser_check_input(int argc, char **argv);
 void			philo_parser_get_input(t_parser_input *parser, int argc, \
 		char **argv);
 
-t_philo			**philo_array_init_root(t_parser_input *parser, \
-		int number_philo, unsigned int *stop);
+t_philo			**philo_array_init(t_parser_input *parser, int number_philo);
 t_philo			*philo_struct_init(t_parser_input *parser, int id, \
 		unsigned int *stop);
-int				philo_array_set_time(t_philo **philo_array, int total_philo);
+int				philo_set_start_time(t_philo **philo_array, int number_philo);
 void			*philo_array_destroy(t_philo **array, int size);
 
-int				philo_array_init_semaphores(t_philo **philo_array, int num);
-void			philo_array_init_semaphore_assist(t_philo **philo_array, \
-		sem_t *sem_forks, sem_t *sem_sit, sem_t *sem_talk);
-int				philo_destroy_sem(sem_t *destroy_me);
+int				philo_init_semaphores(t_philo **philo_array, int num);
+int				philo_set_sema_forks(t_philo **philo_array, int number_philo);
+int				philo_set_sema_sit(t_philo **philo_array, int number_philo);
+int				philo_set_sema_speaker(t_philo **philo_array, int number_phil);
+int				philo_set_sema_touch_last_meal(t_philo **philo_array, \
+		int number_philo);
 
-void			start_and_join_threads(unsigned int number_philo, \
-		pthread_t *pthreads_array, t_philo **philo_array);
-void			*start_philo(void *philo_void);
-void			*polling_philo(void *philo_void);
+void			semaphores_close_all(t_philo **philo_array, int number_philo);
+void			philo_del_sema_touch_last_meal(t_philo **philo_array, \
+		int index);
 
-unsigned int	get_elapsed_time(t_philo *philo);
+void			start_and_join_threads(t_philo **philo_array, \
+		unsigned int number_philo, pthread_t *pthreads_array);
+void			*monitor(void *philo_void);
+void			*life(void *philo_void);
+
+void			set_elapsed_time(t_philo *philo);
+void			philo_update_last_meal_time(t_philo *philo);
+int				philo_check_last_meal_time(t_philo *philo);
 void			philo_try_to_sleep_and_think(t_philo *philo);
 void			philo_try_to_grab_forks_and_eat(t_philo *philo);
 
-void			write_philo_state(t_philo *philo);
+void			write_philo_state(t_philo *philo, t_state state);
 void			write_dead_philo(t_philo *philo);
 void			write_fed_up_philo(t_philo *philo);
 

@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 21:08:16 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/07 01:29:47 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/07 03:52:50 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,6 @@
 /*
 ** note:	This functino will write the state of the buffer to stdout. It uses
 **			a mutex to have access to stdout.
-**
-** note:	If a philosophers is noticed to be dead, it will display it and
-**			never release the mutex for stdout, therefor protecting any
-**			subsequent output.
 */
 
 void			write_with_lock(t_philo *philo, t_state state)
