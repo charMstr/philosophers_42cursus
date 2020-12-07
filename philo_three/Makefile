@@ -6,7 +6,7 @@
 #    By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/01/27 17:46:05 by charmstr          #+#    #+#              #
-#    Updated: 2020/12/02 07:12:05 by charmstr         ###   ########.fr        #
+#    Updated: 2020/12/07 05:24:52 by charmstr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -77,10 +77,13 @@ INCLUDES := $(patsubst %, $(INCLUDE_PATH_PROJECT)%.h, $(H_FILES))
 ###############################################################################
 SRC_FILES =	main\
 			philo_parser_root\
-			philo_load_struct\
+			philo_array_init_root\
+			philo_manage_semaphores\
+			philo_manage_semaphores2\
 			philo_fork_and_start\
 			philo_gettime_and_eat\
 			philo_write_stdout\
+			philo_write_stdout_assist\
 			libft_funcs1
 	
 

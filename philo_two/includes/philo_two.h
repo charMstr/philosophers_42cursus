@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:49:51 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/07 04:55:36 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/07 05:21:27 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,12 @@ typedef enum	e_state
 }				t_state;
 
 /*
-**	state_buff: buffer we use in our start_philo threads to describe.
+**	state_buff: buffer we use in our life threads to describe.
 **	death_buff:	buffer used in the polling philo, so that it is not modified
-**	time: the time used in the start_philo thread.
-**	time_poll: the time used in polling phio_thread.
+**	elapsed_time: the time used in the life thread, time since last_meal
+**	death_time: the time used in monitor thread, checking against time_to_die
 **
-**	total_number: the total number of philosophers.
-**	id:	philosopher_id
-**	itoa_id: string that stores an itoa version of the philo's ID.
+**	id:	philosopher's id.
 **	time_to_eat: the time it takes to eat.
 **	time_to_sleep: the time it takes to sleep.
 **	time_to_die: the time it takes to die since the last meal's start.
@@ -54,9 +52,10 @@ typedef enum	e_state
 **	stop: the adress of a boolean in Main stack if set to one, all philo will
 **		stop.
 **	sema_forks: semaphore on the number of forks
-**	sema_sit_down: number of philosophers divided by two, is the number of
+**	sema_sit: number of philosophers divided by two, is the number of
 **		philosophers that can grab two forks and eat.
-**	sema_talk: token to use stdout
+**	sema_speaker: token to use stdout
+**	sema_touch_last_meal: semaphore to be allowed to update/get last meal time.
 **
 **	timeval_last_meal: contains the timestamp of last meal
 **	timeval_tmp: the gettimeofday struct. always access timeval_tmp.tv_usec

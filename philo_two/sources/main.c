@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:01:32 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/07 04:24:17 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/07 05:11:05 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,6 @@ int		main(int argc, char **argv)
 int		set_mem_protections_and_thread(t_philo **philo_array, \
 		int number_philo, pthread_t *pthread_array)
 {
-	int				i;
-
-	i = 0;
 	if (!philo_init_semaphores(philo_array, number_philo))
 		return (0);
 	if (!philo_set_start_time(philo_array, number_philo))

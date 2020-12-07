@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 06:54:19 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/03 21:11:31 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/07 05:39:09 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 **			from fork function.
 */
 
-int		philo_fork_and_start_processes(int number_philo, t_philo philo)
+int		philo_fork_and_start_processes(int number_philo, t_philo **philo_array)
 {
 	int		i;
 	pid_t	pid;
@@ -38,8 +38,7 @@ int		philo_fork_and_start_processes(int number_philo, t_philo philo)
 		}
 		if (!pid)
 		{
-			philo.id = i + 1;
-			philo_start_process(philo);
+			philo_start_process(*(philo_array[i]));
 			return (EXIT_SUCCESS);
 		}
 		i++;
@@ -98,8 +97,8 @@ void	philo_start_process(t_philo philo)
 	pthread_t	philo_thread;
 	pthread_t	polling_thread;
 
-	pthread_create(&philo_thread, NULL, start_philo, (void*)&philo);
-	pthread_create(&polling_thread, NULL, polling_philo, (void*)&philo);
+	pthread_create(&philo_thread, NULL, life, (void*)&philo);
+	pthread_create(&polling_thread, NULL, monitor, (void*)&philo);
 	pthread_detach(philo_thread);
 	pthread_join(polling_thread, NULL);
 }
@@ -107,14 +106,19 @@ void	philo_start_process(t_philo philo)
 /*
 ** note:	this function will be called for each philosopher.
 **
-** note:	If the number of meals was set and is reached, we then Return.
-**			Also we Return if another philosopher died. known from the stop
-**			field in the structure (pointer common to all philosophers.)
+** note:	try_to_eat1 tries to grab the two forks.
+**			then we check if the philosopher is still alive.
+**			then we can start to eat(try to eat).
+**
+** note:	the very last usleep when exiting the function is because we want
+**			to wait for the writes (in a detached thread) to be done withe our
+**			t_writer's elements, especially the buffer it uses in the write
+**			syscall.
 */
 
-void	*start_philo(void *philo_void)
+void	*life(void *philo_void)
 {
-	t_philo	*philo;
+	t_philo *philo;
 
 	philo = (t_philo *)philo_void;
 	if (!philo->meals_count)
@@ -123,8 +127,8 @@ void	*start_philo(void *philo_void)
 	{
 		philo_try_to_grab_forks_and_eat(philo);
 		if (philo->meals_limit)
-			philo->meals_count--;
-		if (!philo->meals_count)
+			--(philo->meals_count);
+		if (!(philo->meals_count))
 			return (NULL);
 		philo_try_to_sleep_and_think(philo);
 	}
@@ -132,19 +136,16 @@ void	*start_philo(void *philo_void)
 }
 
 /*
-** note:	This function will be launched in parallel for each philo and check
-**			on its death. If the elapsed time since last meal is bigger than
-**			philo->time_to_die, the philo is dead. we will display a message
-**			and never release the semaphore required to use stdout, then exit
-**			a specific message.
-**
-** note:	If the count of meals for a philosopher is down to zero, then we
-**			know this thread is of no more use, we can exit a specific status.
+** note:	This function will be polling for the life of the philosophers it
+**			is attached to, they use the exact same structure.
+**			If a philosopher is dead, then we keep the write mutex in an locked
+**			state, and we unlock the break_free mutex, so that the Main can
+**			free memory and quit for us.
 */
 
-void	*polling_philo(void *philo_void)
+void	*monitor(void *philo_void)
 {
-	t_philo			*philo;
+	t_philo *philo;
 
 	philo = (t_philo *)philo_void;
 	while (1)
@@ -152,14 +153,17 @@ void	*polling_philo(void *philo_void)
 		usleep(500);
 		if (!philo->meals_count)
 		{
-			write_stop_philo(philo, PHILO_DONE_EATING);
+			write_fed_up_philo(philo);
 			exit(PHILO_DONE_EATING);
 		}
-		if ((philo->time_poll = get_elapsed_time(philo)) > philo->time_to_die)
+		sem_wait(philo->sema_touch_last_meal);
+		if (!philo_check_last_meal_time(philo))
 		{
-			write_stop_philo(philo, PHILO_DEAD);
+			write_dead_philo(philo);
+			sem_post(philo->sema_touch_last_meal);
 			exit(PHILO_DEAD);
 		}
+		sem_post(philo->sema_touch_last_meal);
 	}
 	return (NULL);
 }

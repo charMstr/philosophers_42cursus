@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:01:32 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/03 17:45:47 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/07 05:38:00 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,17 +31,28 @@
 **			then it should close the semaphores we opened (good practice only).
 */
 
-int	main(int argc, char **argv)
+int		main(int argc, char **argv)
 {
-	t_philo			philo;
+	t_philo			**philo_array;
 	t_parser_input	parser;
-	int				res;
 
 	if (!philo_parser_root(&parser, argc, argv))
 		return (EXIT_FAILURE);
-	if (!philo_load_struct(&parser, &philo))
+	if (!(philo_array = philo_array_init(&parser, parser.number_philo)))
 		return (EXIT_FAILURE);
-	res = philo_fork_and_start_processes(parser.number_philo, philo);
-	philo_destroy_all_semaphores(&philo);
-	return (res);
+	if (!philo_init_semaphores(philo_array, parser.number_philo))
+	{
+		philo_array_destroy(philo_array, parser.number_philo);
+		return (EXIT_FAILURE);
+	}
+	if (!philo_set_start_time(philo_array, parser.number_philo))
+	{
+		semaphores_close_all(philo_array, parser.number_philo);
+		philo_array_destroy(philo_array, parser.number_philo);
+		return (EXIT_FAILURE);
+	}
+	philo_fork_and_start_processes(parser.number_philo, philo_array);
+	semaphores_close_all(philo_array, parser.number_philo);
+	philo_array_destroy(philo_array, parser.number_philo);
+	return (EXIT_SUCCESS);
 }
