@@ -6,11 +6,11 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/06 15:58:04 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/07 01:53:42 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/21 12:30:08 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_one.h"
+#include "../includes/philo_one.h"
 
 /*
 ** note:	this function will malloc and initialise a mutex for the speaker,
@@ -89,6 +89,24 @@ void	destroy_mutexes_touch_last_meal(t_philo **philo_array, int index)
 		free((philo_array[index])->touch_last_meal);
 		index--;
 	}
+}
+
+/*
+** note:	this function will pass over the mutexe array and destroy all the
+**			the initialised ones, then it will free the array itself.
+**
+** inputs:	num: the number of mutexes initialised so far
+**			mutexes_on_forks: an array of mutexes.
+*/
+
+void	destroy_mutexes_on_forks(pthread_mutex_t *mutexes_on_forks, int num)
+{
+	while (num >= 0)
+	{
+		pthread_mutex_destroy(&(mutexes_on_forks[num]));
+		num--;
+	}
+	free(mutexes_on_forks);
 }
 
 /*

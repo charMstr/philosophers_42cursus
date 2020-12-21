@@ -6,11 +6,11 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:00:06 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/02 08:33:13 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/21 10:23:03 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_one.h"
+#include "../includes/philo_one.h"
 
 /*
 ** note:	this the root function for parsing, it will first check the correct

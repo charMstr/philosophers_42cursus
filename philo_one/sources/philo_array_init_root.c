@@ -6,11 +6,11 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/29 21:35:52 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/06 16:54:14 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/21 12:27:09 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_one.h"
+#include "../includes/philo_one.h"
 
 /*
 ** note:	This function is the basis for building an array of structures,
@@ -76,6 +76,7 @@ t_philo	*philo_struct_init(t_parser_input *parser, int id, \
 	if (!(philo = malloc(sizeof(t_philo))))
 		return (NULL);
 	philo->nb_philo_alive = nb_philo_alive;
+	philo->odd_number = (*nb_philo_alive % 2) ? 1 : 0;
 	*(philo->nb_philo_alive) = (unsigned int)parser->number_philo;
 	philo->id = (unsigned int)id;
 	philo->time_to_eat = (unsigned int)(parser->time_to_eat * 1000);

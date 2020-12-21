@@ -6,11 +6,11 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/30 14:28:44 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/07 01:57:43 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/21 11:45:43 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_one.h"
+#include "../includes/philo_one.h"
 
 /*
 ** note:	This function will create our different threads for each
@@ -52,7 +52,8 @@ int		start_threads(t_philo **phi_array, int number_philo, \
 }
 
 /*
-** note:	this function will be called for each philosopher.
+** note:	This function will be called for each philosopher, when the total
+** 			number of philosophers is odd.
 **
 ** note:	try_to_eat1 tries to grab the two forks.
 **			then we check if the philosopher is still alive.
@@ -98,7 +99,7 @@ void	*monitor(void *philo_void)
 	philo = (t_philo *)philo_void;
 	while (1)
 	{
-		usleep(500);
+		usleep(100);
 		if (!philo->meals_count)
 		{
 			write_fed_up_philo(philo);

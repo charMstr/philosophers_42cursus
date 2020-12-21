@@ -6,11 +6,11 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/03 22:51:12 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/04 05:14:02 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/21 10:23:54 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_one.h"
+#include "../includes/philo_one.h"
 
 /*
 ** note:	this function will copy a string into our buffer, starting at

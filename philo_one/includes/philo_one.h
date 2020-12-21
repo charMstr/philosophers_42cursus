@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:51:40 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/07 01:40:06 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/21 12:29:07 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef enum	e_state
 /*
 **	state_buff: buffer we use in our start_philo threads to describe.
 **	death_buff:	buffer used in the polling philo, so that it is not modified
+**	odd_number: set to one if we have an uneven number of philosophers.
 **	time: the time used in the start_philo thread.
 **	time_poll: the time used in polling phio_thread.
 **
@@ -67,6 +68,7 @@ typedef struct	s_philo
 {
 	char			state_buff[32];
 	char			death_buff[32];
+	char			odd_number;
 	unsigned int	elapsed_time;
 	unsigned int	death_time;
 	unsigned int	id;
@@ -111,9 +113,8 @@ int				philo_mutexes_set(t_philo **philo_array, int number_philo, \
 pthread_mutex_t	*philo_init_mutexes_on_forks(int number_philo);
 void			philo_set_fork1_and_fork2(int number_philo, \
 			t_philo **philo_array, pthread_mutex_t *mutexes_on_forks);
-int				set_fork_index(int id, int total_number, int which);
-void			destroy_mutexes_on_forks(pthread_mutex_t *mutexes_on_forks, \
-			int num);
+int				set_fork_index_odd_case(int id, int total_number, int which);
+int				set_fork_index_even_case(int id, int total_number, int which);
 
 int				philo_init_mutex_speaker(int number_philo, \
 			t_philo **philo_array);
@@ -121,6 +122,8 @@ int				philo_init_mutex_touch_last_meal(int number_philo, \
 			t_philo **philo_array);
 void			destroy_mutexes_touch_last_meal(t_philo **philo_array, \
 			int index);
+void			destroy_mutexes_on_forks(pthread_mutex_t *mutexes_on_forks, \
+			int num);
 void			mutex_destroy_all(t_philo **philo_array, int number_philo, \
 			pthread_mutex_t *mutexes_on_forks);
 
@@ -129,9 +132,11 @@ int				start_threads(t_philo **phi_array, int number_philo, \
 void			*life(void *philo_void);
 void			*monitor(void *philo_void);
 
+void			wait_time(t_philo *philo, unsigned int x);
 void			set_elapsed_time(t_philo *philo);
 void			philo_update_last_meal_time(t_philo *philo);
 int				philo_check_last_meal_time(t_philo *philo);
+
 void			philo_try_to_grab_forks_and_eat(t_philo *philo);
 void			philo_try_to_sleep_and_think(t_philo *philo);
 

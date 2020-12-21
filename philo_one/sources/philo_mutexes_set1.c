@@ -6,11 +6,11 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/06 15:24:25 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/07 02:54:43 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/21 12:29:28 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_one.h"
+#include "../includes/philo_one.h"
 
 /*
 ** note:	This function will take care of setting all the mutexes:
@@ -86,6 +86,11 @@ pthread_mutex_t	*philo_init_mutexes_on_forks(int number_philo)
 **			address of two mutexes, both representing a fork.
 **			Those pointers all come	from the same array, so that a pointer to
 **			a mutex will be shared by two adjacent philosophers.
+**
+** note:	The first while will ditstibute the forks in the case we have an
+** 			odd number of philosophers.
+** 			The second while will distribute the forks in a different way, for
+** 			a different algorithm.
 */
 
 void			philo_set_fork1_and_fork2(int number_philo, \
@@ -96,11 +101,19 @@ void			philo_set_fork1_and_fork2(int number_philo, \
 	int				second_fork_index;
 
 	i = 0;
-	while (i < number_philo)
+	while (number_philo % 2 && i < number_philo)
 	{
-		first_fork_index = set_fork_index(i + 1, number_philo, 1);
+		first_fork_index = set_fork_index_odd_case(i + 1, number_philo, 1);
 		(philo_array[i])->fork1 = &(mutexes_on_forks[first_fork_index]);
-		second_fork_index = set_fork_index(i + 1, number_philo, 2);
+		second_fork_index = set_fork_index_odd_case(i + 1, number_philo, 2);
+		(philo_array[i])->fork2 = &(mutexes_on_forks[second_fork_index]);
+		i++;
+	}
+	while (!(number_philo % 2) && i < number_philo)
+	{
+		first_fork_index = set_fork_index_even_case(i + 1, number_philo, 1);
+		(philo_array[i])->fork1 = &(mutexes_on_forks[first_fork_index]);
+		second_fork_index = set_fork_index_even_case(i + 1, number_philo, 2);
 		(philo_array[i])->fork2 = &(mutexes_on_forks[second_fork_index]);
 		i++;
 	}
@@ -119,7 +132,7 @@ void			philo_set_fork1_and_fork2(int number_philo, \
 **			upon the fact that we have an odd or even number of philosophers.
 */
 
-int				set_fork_index(int id, int total_number, int which)
+int				set_fork_index_odd_case(int id, int total_number, int which)
 {
 	if (which == FIRST_FORK)
 	{
@@ -138,20 +151,32 @@ int				set_fork_index(int id, int total_number, int which)
 }
 
 /*
-** note:	this function will pass over the mutexe array and destroy all the
-**			the initialised ones, then it will free the array itself.
+** note:	This setup up is designed for an even number of philosophers. The
+** 			very first philosopher is left handed, then his neighbor is right
+** 			handed and so on.
 **
-** inputs:	num: the number of mutexes initialised so far
-**			mutexes_on_forks: an array of mutexes.
+** return:	the index of fork1 or fork2, depending on the last parameter, and
+**			upon the fact that we have an odd or even number of philosophers.
 */
 
-void			destroy_mutexes_on_forks(pthread_mutex_t *mutexes_on_forks, \
-		int num)
+int				set_fork_index_even_case(int id, int total_number, int which)
 {
-	while (num >= 0)
+	if (which == FIRST_FORK)
 	{
-		pthread_mutex_destroy(&(mutexes_on_forks[num]));
-		num--;
+		if (id % 2)
+			return (id - 1);
+		else
+		{
+			if (id == total_number)
+				return (0);
+			return (id);
+		}
 	}
-	free(mutexes_on_forks);
+	else
+	{
+		if (id % 2)
+			return (id);
+		else
+			return (id - 1);
+	}
 }

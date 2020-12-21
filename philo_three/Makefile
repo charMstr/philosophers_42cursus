@@ -6,7 +6,7 @@
 #    By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/01/27 17:46:05 by charmstr          #+#    #+#              #
-#    Updated: 2020/12/07 05:24:52 by charmstr         ###   ########.fr        #
+#    Updated: 2020/12/21 12:25:52 by charmstr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -81,7 +81,8 @@ SRC_FILES =	main\
 			philo_manage_semaphores\
 			philo_manage_semaphores2\
 			philo_fork_and_start\
-			philo_gettime_and_eat\
+			philo_get_time\
+			philo_try_to_eat\
 			philo_write_stdout\
 			philo_write_stdout_assist\
 			libft_funcs1

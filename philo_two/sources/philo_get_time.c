@@ -1,16 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_gettime_and_eat.c                            :+:      :+:    :+:   */
+/*   philo_get_time.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/30 15:16:04 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/07 05:00:24 by charmstr         ###   ########.fr       */
+/*   Created: 2020/12/21 12:12:39 by charmstr          #+#    #+#             */
+/*   Updated: 2020/12/21 13:04:42 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_two.h"
+#include "../includes/philo_two.h"
+
+void	wait_time(t_philo *philo, unsigned int x)
+{
+	unsigned int elapsed_time;
+
+	while (1)
+	{
+		usleep(100);
+		gettimeofday(&philo->timeval_tmp, NULL);
+		if (philo->timeval_last_meal.tv_sec == philo->timeval_tmp.tv_sec)
+		{
+			elapsed_time = (philo->timeval_tmp.tv_usec \
+					- philo->timeval_last_meal.tv_usec);
+		}
+		else
+		{
+			elapsed_time = ((philo->timeval_tmp.tv_sec \
+				- philo->timeval_last_meal.tv_sec - 1) * 1000 + (1000000 \
+				- philo->timeval_last_meal.tv_usec \
+				+ philo->timeval_tmp.tv_usec));
+		}
+		if (elapsed_time > x)
+			break ;
+	}
+}
 
 /*
 ** note:	This function returns the time elapsed since the last meal.
@@ -72,46 +97,4 @@ int		philo_check_last_meal_time(t_philo *philo)
 	if (philo->death_time > philo->time_to_die)
 		return (0);
 	return (1);
-}
-
-/*
-** note:	This function will try to update the philospher's last meal time in
-**			time before it starves.
-**
-** note:	At start all the philosophers except the first one are right handed
-**			and they are started in a specific order so that the odd id numbers
-**			start together.
-**			Then each time a philosopher is done eating and has an odd number,
-**			it will go from being right handed to left handed or vice versa.
-*/
-
-void	philo_try_to_grab_forks_and_eat(t_philo *philo)
-{
-	sem_wait(philo->sema_sit);
-	sem_wait(philo->sema_forks);
-	set_elapsed_time(philo);
-	write_philo_state(philo, FORK);
-	sem_wait(philo->sema_forks);
-	set_elapsed_time(philo);
-	write_philo_state(philo, FORK);
-	philo_update_last_meal_time(philo);
-	sem_post(philo->sema_sit);
-	write_philo_state(philo, EAT);
-	usleep(philo->time_to_eat);
-	sem_post(philo->sema_forks);
-	sem_post(philo->sema_forks);
-}
-
-/*
-** note:	the separation is made so that we can interrupt the printing on
-**			stdout in case we are done with our meals.
-*/
-
-void	philo_try_to_sleep_and_think(t_philo *philo)
-{
-	set_elapsed_time(philo);
-	write_philo_state(philo, SLEEP);
-	usleep(philo->time_to_sleep);
-	set_elapsed_time(philo);
-	write_philo_state(philo, THINK);
 }

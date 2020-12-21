@@ -6,7 +6,7 @@
 /*   By: charmstr <charmstr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 00:49:51 by charmstr          #+#    #+#             */
-/*   Updated: 2020/12/07 05:26:57 by charmstr         ###   ########.fr       */
+/*   Updated: 2020/12/21 13:06:52 by charmstr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,9 +125,11 @@ void			*monitor(void *philo_void);
 void			*life(void *philo_void);
 void			philo_wait_for_pids(int number_philo);
 
+void			wait_time(t_philo *philo, unsigned int x);
 void			set_elapsed_time(t_philo *philo);
 void			philo_update_last_meal_time(t_philo *philo);
 int				philo_check_last_meal_time(t_philo *philo);
+
 void			philo_try_to_sleep_and_think(t_philo *philo);
 void			philo_try_to_grab_forks_and_eat(t_philo *philo);
 
